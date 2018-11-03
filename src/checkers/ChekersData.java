@@ -15,5 +15,14 @@ public class ChekersData {
         setUpGame();            //Funkcja ktora ustawi pionki na planszy
     }
 
-    public void setUpGame(){} // Trzeba odpowiednio ustawic pionki na planszy
+    public void setUpGame(){
+        board = new int[][]{{0, 2, 0, 2, 0, 2, 0, 2},
+                {2, 0, 2, 0, 2, 0, 2, 0},
+                {0, 2, 0, 2, 0, 2, 0, 2},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {1, 0, 1, 0, 1, 0, 1, 0},
+                {0, 1, 0, 1, 0, 1, 0, 1},
+                {1, 0, 1, 0, 1, 0, 1, 0}};
+    } //tworzy czystą planszę z poustawianymi pionkami
 }
