@@ -1,5 +1,6 @@
 package checkers;
 
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
@@ -7,7 +8,9 @@ import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class Game {
@@ -19,24 +22,63 @@ public class Game {
             screen.startScreen();
             final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
             final Window window = new BasicWindow("Checkers");
-            window.setHints(Arrays.asList(Window.Hint.CENTERED));
+
+            TextBox user1 = new TextBox();
+            TextBox user2 = new TextBox();
+            List<TextColor.ANSI> colorValues = new ArrayList<>();
+            for (int i = 0; i < TextColor.ANSI.values().length - 1; i++) {
+                colorValues.add(TextColor.ANSI.values()[i]);
+            }
+            ComboBox<TextColor.ANSI> userColor1 = new ComboBox<>(colorValues);
+            ComboBox<TextColor.ANSI> userColor2 = new ComboBox<>(colorValues);
+            ComboBox<Integer> turnTime = new ComboBox<>(30, 45, 60, 75, 90);
+            turnTime.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.END));
+            turnTime.setReadOnly(true);
+            CheckBox forceHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
+            CheckBox frontHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
+            CheckBox backHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
+            frontHit.setChecked(true);
+            backHit.setChecked(true);
+
+            window.setHints(Collections.singletonList(Window.Hint.CENTERED));
             Panel contentPanel = new Panel(new GridLayout(1));
+
+            Button backButton = new Button("Cofnij", new Runnable() {
+                @Override
+                public void run() {
+                    window.setComponent(contentPanel);
+                    ((BasicWindow) window).setTitle("Checkers");
+                }
+            });
+
+            Button startGameButton = new Button("Start");
+
             GridLayout gridLayout = (GridLayout) contentPanel.getLayoutManager();
-            Label title = new Label("Checkers");
-            title.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.BEGINNING, true, false, 1, 1));
-            contentPanel.addComponent(title);
             contentPanel.addComponent(new Button("Nowa gra", new Runnable() {
                 @Override
                 public void run() {
                     Panel newPanel = new Panel(new GridLayout(2));
-                    newPanel.addComponent(new Button("Cofnij", new Runnable() {
-                        @Override
-                        public void run() {
-                            window.setComponent(contentPanel);
-                            ((BasicWindow) window).setTitle("Checkers");
-                        }
-                    }));
-                    ((BasicWindow) window).setTitle("Opcje rozgrywki");
+                    newPanel.addComponent(new Label("Opcje graczy").setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true, 2, 1)));
+                    newPanel.addComponent(new Label("Nazwa gracza 1"));
+                    newPanel.addComponent(user1);
+                    newPanel.addComponent(new Label("Kolor gracza 1"));
+                    newPanel.addComponent(userColor1);
+                    newPanel.addComponent(new Label("Nazwa gracza 2"));
+                    newPanel.addComponent(user2);
+                    newPanel.addComponent(new Label("Kolor gracza 2"));
+                    newPanel.addComponent(userColor2);
+                    newPanel.addComponent(new Label("Czas tury"));
+                    newPanel.addComponent(turnTime);
+                    newPanel.addComponent(new Label("Opcje bicia").setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true, 2, 1)));
+                    newPanel.addComponent(new Label("Wymuszenie bicia"));
+                    newPanel.addComponent(forceHit);
+                    newPanel.addComponent(new Label("Bicie do przodu"));
+                    newPanel.addComponent(frontHit);
+                    newPanel.addComponent(new Label("Bicie do tylu"));
+                    newPanel.addComponent(backHit);
+                    newPanel.addComponent(startGameButton);
+                    newPanel.addComponent(backButton);
+                    ((BasicWindow) window).setTitle("Nowa gra");
                     window.setComponent(newPanel);
 
 
@@ -45,13 +87,13 @@ public class Game {
             contentPanel.addComponent(new Button("Zasady", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Zasady gry", "Tutaj będą zapisane\n zasady gry", MessageDialogButton.OK, MessageDialogButton.Cancel);
+                    MessageDialog.showMessageDialog(textGUI, "Zasady gry", "Tutaj będą zapisane\n zasady gry", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Autorzy", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Tutaj beda zapisane nasze imiona :)", MessageDialogButton.OK, MessageDialogButton.Cancel);
+                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Tutaj beda zapisane nasze imiona :)", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Wyjscie", new Runnable() {
