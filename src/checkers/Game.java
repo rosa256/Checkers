@@ -1,8 +1,6 @@
 package checkers;
 
-import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
@@ -14,14 +12,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.googlecode.lanterna.TerminalPosition.OFFSET_1x1;
-
 
 public class Game {
-
     public static void main(String[] args) {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Screen screen = null;
+        final CheckersBoard[] gameBoard = {null};
         try {
             screen = terminalFactory.createScreen();
             screen.startScreen();
@@ -48,6 +44,19 @@ public class Game {
             window.setHints(Collections.singletonList(Window.Hint.CENTERED));
             Panel contentPanel = new Panel(new GridLayout(1));
 
+            Panel gamePanel = new Panel(new GridLayout(1));
+            gamePanel.addComponent(new Label("W trakcie gry, wciśnij przycisk aby zamknąć grę i wrócić do menu"));
+            gamePanel.addComponent(new Button("Powrót do menu", new Runnable() {
+                @Override
+                public void run() {
+                    window.setComponent(contentPanel);
+                    try {
+                        gameBoard[0].closeGame();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }));
             Button backButton = new Button("Cofnij", new Runnable() {
                 @Override
                 public void run() {
@@ -59,18 +68,29 @@ public class Game {
             Button startGameButton = new Button("Start", new Runnable() {
                 @Override
                 public void run() {
-                    if(userColor1.getSelectedItem() == userColor2.getSelectedItem())
-                    {
+                    if (userColor1.getSelectedItem() == userColor2.getSelectedItem()) {
                         MessageDialog.showMessageDialog(textGUI, "Błąd: te same kolory graczy", "Kolory graczy nie mogą być takie same.", MessageDialogButton.OK);
+                    } else {
+                        try {
+                            gameBoard[0] = new CheckersBoard(userColor1.getSelectedItem(),userColor2.getSelectedItem());
+                            window.setComponent(gamePanel);
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    else
-                    {
-                        CheckersBoard gameBoard = new CheckersBoard();
-                    }
+//                    try {
+//                        finalScreen[0].stopScreen();
+//                        finalScreen[0] = terminalFactory.createScreen();
+//                        finalScreen[0].startScreen();
+//                        textGUI[0] = new MultiWindowTextGUI(finalScreen[0]);
+//                        window.setComponent(contentPanel);
+//                        textGUI[0].addWindowAndWait(window);
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             });
-
-
 
             GridLayout gridLayout = (GridLayout) contentPanel.getLayoutManager();
             contentPanel.addComponent(new Button("Nowa gra", new Runnable() {
@@ -112,7 +132,7 @@ public class Game {
             contentPanel.addComponent(new Button("Autorzy", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Jakub Pfajfer\nMateusz Janel\nDamian Rosiński", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Jakub Pfajfer\nMateusz Janel\nDamian Rosiński:)", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Wyjscie", new Runnable() {
