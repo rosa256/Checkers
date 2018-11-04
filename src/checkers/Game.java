@@ -1,5 +1,6 @@
 package checkers;
 
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -14,18 +15,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.googlecode.lanterna.TerminalPosition.OFFSET_1x1;
-
 
 public class Game {
-
-    public static void main(String[] args) {
+    public static void main(String[] args){
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Screen screen = null;
         try {
             screen = terminalFactory.createScreen();
             screen.startScreen();
-            final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
+            final WindowBasedTextGUI[] textGUI = {new MultiWindowTextGUI(screen)};
             final Window window = new BasicWindow("Checkers");
 
             TextBox user1 = new TextBox();
@@ -56,21 +54,23 @@ public class Game {
                 }
             });
 
+            final Screen[] finalScreen = {screen};
             Button startGameButton = new Button("Start", new Runnable() {
                 @Override
                 public void run() {
-                    if(userColor1.getSelectedItem() == userColor2.getSelectedItem())
-                    {
-                        MessageDialog.showMessageDialog(textGUI, "Błąd: te same kolory graczy", "Kolory graczy nie mogą być takie same.", MessageDialogButton.OK);
-                    }
-                    else
-                    {
-                        CheckersBoard gameBoard = new CheckersBoard();
+                    try {
+                        finalScreen[0].stopScreen();
+                        finalScreen[0] = terminalFactory.createScreen();
+                        finalScreen[0].startScreen();
+                        textGUI[0] = new MultiWindowTextGUI(finalScreen[0]);
+                        window.setComponent(contentPanel);
+                        textGUI[0].addWindowAndWait(window);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             });
-
-
 
             GridLayout gridLayout = (GridLayout) contentPanel.getLayoutManager();
             contentPanel.addComponent(new Button("Nowa gra", new Runnable() {
@@ -106,23 +106,27 @@ public class Game {
             contentPanel.addComponent(new Button("Zasady", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Zasady gry", "Tutaj będą zapisane\n zasady gry", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI[0], "Zasady gry", "Tutaj będą zapisane\n zasady gry", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Autorzy", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Jakub Pfajfer\nMateusz Janel\nDamian Rosiński", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI[0], "Autorzy", "Tutaj beda zapisane nasze imiona :)", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Wyjscie", new Runnable() {
                 @Override
                 public void run() {
-                    window.close();
+                    try {
+                        finalScreen[0].close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             window.setComponent(contentPanel);
-            textGUI.addWindowAndWait(window);
+            textGUI[0].addWindowAndWait(window);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
