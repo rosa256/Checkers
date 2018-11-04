@@ -25,4 +25,8 @@ public class ChekersData {
                 {0, 1, 0, 1, 0, 1, 0, 1},
                 {1, 0, 1, 0, 1, 0, 1, 0}};
     } //tworzy czystą planszę z poustawianymi pionkami
+
+    int[][] getBoard(){
+        return board;
+    }
 }
