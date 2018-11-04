@@ -1,6 +1,8 @@
 package checkers;
 
+import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
@@ -12,8 +14,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.googlecode.lanterna.TerminalPosition.OFFSET_1x1;
+
 
 public class Game {
+
     public static void main(String[] args) {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Screen screen = null;
@@ -51,7 +56,21 @@ public class Game {
                 }
             });
 
-            Button startGameButton = new Button("Start");
+            Button startGameButton = new Button("Start", new Runnable() {
+                @Override
+                public void run() {
+                    if(userColor1.getSelectedItem() == userColor2.getSelectedItem())
+                    {
+                        MessageDialog.showMessageDialog(textGUI, "Błąd: te same kolory graczy", "Kolory graczy nie mogą być takie same.", MessageDialogButton.OK);
+                    }
+                    else
+                    {
+                        CheckersBoard gameBoard = new CheckersBoard();
+                    }
+                }
+            });
+
+
 
             GridLayout gridLayout = (GridLayout) contentPanel.getLayoutManager();
             contentPanel.addComponent(new Button("Nowa gra", new Runnable() {
@@ -93,7 +112,7 @@ public class Game {
             contentPanel.addComponent(new Button("Autorzy", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Tutaj beda zapisane nasze imiona :)", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Jakub Pfajfer\nMateusz Janel\nDamian Rosiński", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Wyjscie", new Runnable() {
