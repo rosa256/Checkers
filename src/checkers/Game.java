@@ -1,9 +1,6 @@
 package checkers;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
@@ -17,13 +14,14 @@ import java.util.List;
 
 
 public class Game {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Screen screen = null;
+        final CheckersBoard[] gameBoard = {null};
         try {
             screen = terminalFactory.createScreen();
             screen.startScreen();
-            final WindowBasedTextGUI[] textGUI = {new MultiWindowTextGUI(screen)};
+            final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
             final Window window = new BasicWindow("Checkers");
 
             TextBox user1 = new TextBox();
@@ -46,6 +44,19 @@ public class Game {
             window.setHints(Collections.singletonList(Window.Hint.CENTERED));
             Panel contentPanel = new Panel(new GridLayout(1));
 
+            Panel gamePanel = new Panel(new GridLayout(1));
+            gamePanel.addComponent(new Label("W trakcie gry, wciśnij przycisk aby zamknąć grę i wrócić do menu"));
+            gamePanel.addComponent(new Button("Powrót do menu", new Runnable() {
+                @Override
+                public void run() {
+                    window.setComponent(contentPanel);
+                    try {
+                        gameBoard[0].closeGame();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }));
             Button backButton = new Button("Cofnij", new Runnable() {
                 @Override
                 public void run() {
@@ -54,21 +65,30 @@ public class Game {
                 }
             });
 
-            final Screen[] finalScreen = {screen};
             Button startGameButton = new Button("Start", new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        finalScreen[0].stopScreen();
-                        finalScreen[0] = terminalFactory.createScreen();
-                        finalScreen[0].startScreen();
-                        textGUI[0] = new MultiWindowTextGUI(finalScreen[0]);
-                        window.setComponent(contentPanel);
-                        textGUI[0].addWindowAndWait(window);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (userColor1.getSelectedItem() == userColor2.getSelectedItem()) {
+                        MessageDialog.showMessageDialog(textGUI, "Błąd: te same kolory graczy", "Kolory graczy nie mogą być takie same.", MessageDialogButton.OK);
+                    } else {
+                        try {
+                            gameBoard[0] = new CheckersBoard();
+                            window.setComponent(gamePanel);
+                        } catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+//                    try {
+//                        finalScreen[0].stopScreen();
+//                        finalScreen[0] = terminalFactory.createScreen();
+//                        finalScreen[0].startScreen();
+//                        textGUI[0] = new MultiWindowTextGUI(finalScreen[0]);
+//                        window.setComponent(contentPanel);
+//                        textGUI[0].addWindowAndWait(window);
+//
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                 }
             });
 
@@ -106,27 +126,23 @@ public class Game {
             contentPanel.addComponent(new Button("Zasady", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI[0], "Zasady gry", "Tutaj będą zapisane\n zasady gry", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI, "Zasady gry", "Tutaj będą zapisane\n zasady gry", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Autorzy", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI[0], "Autorzy", "Tutaj beda zapisane nasze imiona :)", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Jakub Pfajfer\nMateusz Janel\nDamian Rosiński:)", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Wyjscie", new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        finalScreen[0].close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    window.close();
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             window.setComponent(contentPanel);
-            textGUI[0].addWindowAndWait(window);
+            textGUI.addWindowAndWait(window);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

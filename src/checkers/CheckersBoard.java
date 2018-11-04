@@ -1,17 +1,15 @@
 package checkers;
 
-import java.awt.*;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
-
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import java.io.IOException;
 
 public class CheckersBoard implements ActionListener, MouseListener {
@@ -27,16 +25,17 @@ public class CheckersBoard implements ActionListener, MouseListener {
     int selectedRow, selectedCol;   // sluzy do przechowania na ktore miejsce sie ruszyl gracz
     private static Screen screen;
 
-    static {
-        try {
-            screen = new DefaultTerminalFactory().createScreen();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    static {
+//        try {
+//            screen = new DefaultTerminalFactory().createScreen();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     public CheckersBoard() throws IOException, InterruptedException { // konstruktor
+        screen = new DefaultTerminalFactory().createScreen();
         ChekersData board = new ChekersData(); // nasza plansza pomocnicza
         doNewGame();
         screen.startScreen();
@@ -47,9 +46,14 @@ public class CheckersBoard implements ActionListener, MouseListener {
 
     }
 
+    public void closeGame() throws IOException {
+        if (screen != null)
+            screen.stopScreen();
+    }
+
     public static void printBoard(int[][] board) throws IOException {
-        screen.startScreen();
-        screen.doResizeIfNecessary();
+//        screen.startScreen();
+//        screen.doResizeIfNecessary();
         System.out.println(board[0][0]);
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
