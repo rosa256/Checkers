@@ -104,9 +104,16 @@ public class CheckersBoard implements ActionListener, MouseListener {
 
                             //CheckersMove[] moves = board.getLegalMoves(board.getBoard()[selectedRowFrom][selectedColFrom],selectedRowFrom,selectedColFrom);
                             CheckersMove myMove = new CheckersMove(selectedRowFrom,selectedColFrom,selectedRowTo,selectedColTo);
-                            if(board.canMove(board.getBoard()[selectedRowFrom][selectedColFrom],selectedRowFrom,selectedColFrom,selectedRowTo,selectedColTo)) {
-                                        board.makeMove(myMove);
-                                        System.out.println("Poszlo");
+                            if(selectedRowFrom +1 == selectedRowTo || selectedRowFrom - 1 == selectedRowTo) {
+                                if (board.canMove(board.getBoard()[selectedRowFrom][selectedColFrom], selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
+                                    board.makeMove(myMove);
+                                    System.out.println("Move");
+                                }
+                            }else if(selectedRowFrom + 2 == selectedRowTo || selectedRowFrom - 2 == selectedRowTo) {
+                                if (board.canJump(board.getBoard()[selectedRowFrom][selectedColFrom], selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
+                                    board.makeMove(myMove);
+                                    System.out.println("Jump");
+                                }
                             }
                         }
                     }
