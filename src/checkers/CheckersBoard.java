@@ -32,7 +32,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
     static int pom_row = 0, pom_col = 0;
     long startingTime = System.currentTimeMillis();
     static TextGraphics TG;
-    static TimeCounter tc;
+    static timeCounter tc;
 
 
     public CheckersBoard(TextColor.ANSI uColor1, TextColor.ANSI uColor2, String name1, String name2) throws IOException, InterruptedException { // konstruktor
@@ -41,7 +41,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
         ChekersData board = new ChekersData(); // nasza plansza pomocnicza
         doNewGame(board);
         screen.startScreen();
-        tc = new TimeCounter();
+        tc = new timeCounter();
         TG = screen.newTextGraphics();
         screen.doResizeIfNecessary();
         initBoard();
@@ -135,6 +135,11 @@ public class CheckersBoard implements ActionListener, MouseListener {
                     screen.refresh();
 
                 } else if (keyPressed.getKeyType() == KeyType.Escape){
+                    selectedRowFrom = -1;
+                    selectedColFrom = -1;
+                    selectedRowTo = -1;
+                    selectedColTo = -1;
+                    enterCount = 0;
                     initBoard();
                     printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);

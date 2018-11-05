@@ -1,17 +1,14 @@
 package checkers;
 
-import java.util.Date;
-
-public class timeCounter
-{
-    public static long getStartingTime() {
-        return startingTime;
+public class timeCounter {
+    public long getStartingTime() {
+        return this.startingTime;
     }
 
-    public static long getElapsedTime() {
-        long elapsedTime = System.currentTimeMillis() - startingTime;
+    public long getElapsedTime() {
+        long elapsedTime = System.currentTimeMillis() - this.startingTime;
         return elapsedTime;
     }
 
-    static long startingTime = System.currentTimeMillis();
+    long startingTime = System.currentTimeMillis();
 }

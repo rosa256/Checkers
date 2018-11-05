@@ -14,7 +14,7 @@ import java.util.List;
 
 
 public class Game {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Screen screen = null;
         final CheckersBoard[] gameBoard = {null};
@@ -57,6 +57,9 @@ public class Game {
                 public void run() {
                     if (userColor1.getSelectedItem() == userColor2.getSelectedItem()) {
                         MessageDialog.showMessageDialog(textGUI, "Błąd: te same kolory graczy", "Kolory graczy nie mogą być takie same.", MessageDialogButton.OK);
+                    }
+                    if (user1.getText().equals("") || user2.getText().equals("")) {
+                        MessageDialog.showMessageDialog(textGUI, "Błąd: Któryś z graczy nie posiada nazwy", "Wszyscy gracze muszą mieć przypisane nazwy.", MessageDialogButton.OK);
                     } else {
                         try {
                             window.setComponent(gamePanel);
@@ -98,10 +101,13 @@ public class Game {
 
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
-            contentPanel.addComponent(new Button("Zasady", new Runnable() {
+            contentPanel.addComponent(new Button("Instrukcja gry", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Zasady gry", "Tutaj będą zapisane\n zasady gry", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI, "Instrukcja gry", "Strzałki - wybór pola planszy\n" +
+                            "Enter - zatwierdzenie wyboru\n" +
+                            "Escape - anulowanie ruchu\n" +
+                            "Backspace - powrót do menu\n", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Autorzy", new Runnable() {
@@ -128,6 +134,7 @@ public class Game {
                     e.printStackTrace();
                 }
             }
+            screen.close();
         }
     }
 }
