@@ -32,6 +32,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
     static int pom_row = 0, pom_col = 0;
     long startingTime = System.currentTimeMillis();
     static TextGraphics TG;
+    static TimeCounter tc;
 
 
     public CheckersBoard(TextColor.ANSI uColor1, TextColor.ANSI uColor2, String name1, String name2) throws IOException, InterruptedException { // konstruktor
@@ -40,6 +41,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
         ChekersData board = new ChekersData(); // nasza plansza pomocnicza
         doNewGame(board);
         screen.startScreen();
+        tc = new TimeCounter();
         TG = screen.newTextGraphics();
         screen.doResizeIfNecessary();
         initBoard();
@@ -131,13 +133,13 @@ public class CheckersBoard implements ActionListener, MouseListener {
         tg.drawRectangle(new TerminalPosition(48, 0), new TerminalSize(screen.getTerminalSize().getColumns() - 48, screen.getTerminalSize().getRows()), new TextCharacter('*', new TextColor.RGB(132, 216, 99), new TextColor.RGB(10, 10, 10)));
         tg.putString(new TerminalPosition(49, 1), "Gracz 2: ", SGR.BOLD);
         tg.setForegroundColor(uColor2);
-        tg.putString(new TerminalPosition(58, 1), username2, SGR.BOLD, SGR.ITALIC, SGR.BORDERED);
+        tg.putString(new TerminalPosition(58, 1), username2, SGR.BOLD, SGR.ITALIC);
         tg.setForegroundColor(TextColor.ANSI.DEFAULT);
         tg.putString(new TerminalPosition(49, 22), "Gracz 1: ", SGR.BOLD);
         tg.setForegroundColor(uColor1);
         tg.putString(new TerminalPosition(58, 22), username1, SGR.BOLD, SGR.ITALIC);
         tg.setForegroundColor(TextColor.ANSI.DEFAULT);
-        Date date = new Date(timeCounter.getElapsedTime());
+        Date date = new Date(tc.getElapsedTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         String formatted = formatter.format(date);
