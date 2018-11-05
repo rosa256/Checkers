@@ -1,7 +1,7 @@
 package checkers;
 
-import com.googlecode.lanterna.TextCharacter;
-import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.*;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -12,6 +12,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class CheckersBoard implements ActionListener, MouseListener {
     //Tu bym zrobil wyswietlanie calej planszy gry
@@ -27,17 +30,17 @@ public class CheckersBoard implements ActionListener, MouseListener {
     int selectedRowTo =-1, selectedColTo =-1;   // sluzy do przechowania na ktore miejsce sie ruszyl gracz
     private static Screen screen;
     static int pom_row = 0, pom_col = 0;
+    long startingTime = System.currentTimeMillis();
+    static TextGraphics TG;
 
 
-
-
-    public CheckersBoard(TextColor.ANSI uColor1,TextColor.ANSI uColor2) throws IOException, InterruptedException { // konstruktor
+    public CheckersBoard(TextColor.ANSI uColor1, TextColor.ANSI uColor2, String name1, String name2) throws IOException, InterruptedException { // konstruktor
 
         screen = new DefaultTerminalFactory().createScreen();
         ChekersData board = new ChekersData(); // nasza plansza pomocnicza
         doNewGame(board);
         screen.startScreen();
-
+        TG = screen.newTextGraphics();
         screen.doResizeIfNecessary();
         initBoard();
         printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
@@ -47,7 +50,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
         boolean keepRunning = true;
         while (keepRunning) {
             KeyStroke keyPressed = screen.pollInput();
-
+            printInterface(uColor1, uColor2, startingTime, TG, name1, name2);
             if (keyPressed != null) {
                 System.out.println(keyPressed.toString());
                 if (keyPressed.getKeyType() == KeyType.Backspace || keyPressed.getKeyType() == KeyType.EOF) {
@@ -58,7 +61,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
                         pom_col = pom_col + 1;
                         initBoard();
                         printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
-                    printCursor(pom_col * 6,pom_row * 3);
+                    printCursor(pom_col * 6, pom_row * 3);
                         screen.refresh();
 
                 }else if (keyPressed.getKeyType() == KeyType.ArrowLeft && pom_col > 0) {
@@ -117,15 +120,29 @@ public class CheckersBoard implements ActionListener, MouseListener {
                     screen.refresh();
                 }
             }
+            screen.refresh();
         }
 
         screen.refresh();
         screen.stopScreen();
     }
 
-    public void closeGame() throws IOException {
-        if (screen != null)
-            screen.stopScreen();
+    public static void printInterface(TextColor.ANSI uColor1, TextColor.ANSI uColor2, long startingTime, TextGraphics tg, String username1, String username2) {
+        tg.drawRectangle(new TerminalPosition(48, 0), new TerminalSize(screen.getTerminalSize().getColumns() - 48, screen.getTerminalSize().getRows()), new TextCharacter('*', new TextColor.RGB(132, 216, 99), new TextColor.RGB(10, 10, 10)));
+        tg.putString(new TerminalPosition(49, 1), "Gracz 2: ", SGR.BOLD);
+        tg.setForegroundColor(uColor2);
+        tg.putString(new TerminalPosition(58, 1), username2, SGR.BOLD, SGR.ITALIC, SGR.BORDERED);
+        tg.setForegroundColor(TextColor.ANSI.DEFAULT);
+        tg.putString(new TerminalPosition(49, 22), "Gracz 1: ", SGR.BOLD);
+        tg.setForegroundColor(uColor1);
+        tg.putString(new TerminalPosition(58, 22), username1, SGR.BOLD, SGR.ITALIC);
+        tg.setForegroundColor(TextColor.ANSI.DEFAULT);
+        long elapsedTime = System.currentTimeMillis() - startingTime;
+        Date date = new Date(elapsedTime);
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String formatted = formatter.format(date);
+        tg.putString(new TerminalPosition(60, 10), formatted);
     }
 
     public static void printBoard(int[][] board, TextColor.ANSI uColor1, TextColor.ANSI uColor2, int selectedRowFrom, int selectedColFrom) throws IOException {
@@ -197,6 +214,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
             }
         }
     }
+
 
     public static void printWhiteField(int r, int c){
         for (int i = r; i < r + 6; i++) {

@@ -60,7 +60,7 @@ public class Game {
                     } else {
                         try {
                             window.setComponent(gamePanel);
-                            gameBoard[0] = new CheckersBoard(userColor1.getSelectedItem(),userColor2.getSelectedItem());
+                            gameBoard[0] = new CheckersBoard(userColor1.getSelectedItem(), userColor2.getSelectedItem(), user1.getText(), user2.getText());
                             window.setComponent(contentPanel);
                         } catch (IOException | InterruptedException e) {
                             e.printStackTrace();
@@ -107,7 +107,7 @@ public class Game {
             contentPanel.addComponent(new Button("Autorzy", new Runnable() {
                 @Override
                 public void run() {
-                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Jakub Pfajfer\nMateusz Janel\nDamian Rosiński:)", MessageDialogButton.OK);
+                    MessageDialog.showMessageDialog(textGUI, "Autorzy", "Jakub Pfajfer\nMateusz Janel\nDamian Rosiński", MessageDialogButton.OK);
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
             contentPanel.addComponent(new Button("Wyjscie", new Runnable() {
