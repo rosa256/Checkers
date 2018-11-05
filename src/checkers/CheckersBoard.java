@@ -54,26 +54,26 @@ public class CheckersBoard implements ActionListener, MouseListener {
                     keepRunning = false;
                     screen.stopScreen();
                     break;
-                }else if (keyPressed.getKeyType() == KeyType.ArrowRight) {
+                }else if (keyPressed.getKeyType() == KeyType.ArrowRight && pom_col < 7) {
                         pom_col = pom_col + 1;
                         initBoard();
                         printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                         screen.refresh();
 
-                }else if (keyPressed.getKeyType() == KeyType.ArrowLeft) {
+                }else if (keyPressed.getKeyType() == KeyType.ArrowLeft && pom_col > 0) {
                         pom_col = pom_col - 1;
                         initBoard();
                         printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                         screen.refresh();
-                }else if (keyPressed.getKeyType() == KeyType.ArrowDown) {
+                }else if (keyPressed.getKeyType() == KeyType.ArrowDown && pom_row < 7) {
                     pom_row = pom_row +1;
                     initBoard();
                     printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                     screen.refresh();
-                }else if (keyPressed.getKeyType() == KeyType.ArrowUp) {
+                }else if (keyPressed.getKeyType() == KeyType.ArrowUp && pom_row > 0) {
                     pom_row = pom_row -1;
                     initBoard();
                     printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
