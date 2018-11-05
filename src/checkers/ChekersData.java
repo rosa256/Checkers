@@ -5,10 +5,10 @@ public class ChekersData {
     // Informacje o polozeniu pionkow na mapie itp. rozwinie się jeszcze
 
     // Białe Pionki to 1 a czarne to 2 i to będzie na tablicy intow
-    public static final int EMPTY = 0, WHITE = 1, BLACK = 2;
+    public static final int EMPTY = 0, WHITE = 1, BLACK = 2, CURSOR = 5;
 
 
-    private int board [][];     // Mapa intow - tak naprawde to bedzie nasza plansza pomocnicza - board[r][c]
+    public static int board [][];     // Mapa intow - tak naprawde to bedzie nasza plansza pomocnicza - board[r][c]
 
     public ChekersData(){       //Konstruktor
         board = new int[8][8];  // Nasza plansza
@@ -28,5 +28,9 @@ public class ChekersData {
 
     int[][] getBoard(){
         return board;
+    }
+
+    int getValue(int r,int c){
+        return board[r][c];
     }
 }
