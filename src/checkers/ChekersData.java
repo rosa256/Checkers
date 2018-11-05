@@ -1,5 +1,7 @@
 package checkers;
 
+import java.util.Date;
+
 public class ChekersData {
     // Klasa ktora przechowuje informacje o Białych i Czarnych pionkach.
     // Informacje o polozeniu pionkow na mapie itp. rozwinie się jeszcze
@@ -34,3 +36,5 @@ public class ChekersData {
         return board[r][c];
     }
 }
+
+

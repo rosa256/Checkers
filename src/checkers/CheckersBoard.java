@@ -137,8 +137,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
         tg.setForegroundColor(uColor1);
         tg.putString(new TerminalPosition(58, 22), username1, SGR.BOLD, SGR.ITALIC);
         tg.setForegroundColor(TextColor.ANSI.DEFAULT);
-        long elapsedTime = System.currentTimeMillis() - startingTime;
-        Date date = new Date(elapsedTime);
+        Date date = new Date(timeCounter.getElapsedTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         String formatted = formatter.format(date);
