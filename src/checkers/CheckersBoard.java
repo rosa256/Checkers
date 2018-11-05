@@ -2,7 +2,8 @@ package checkers;
 
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
-import com.googlecode.lanterna.input.*;
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
@@ -27,13 +28,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
     int rowCursor = 0, colCursor = 0;
     static int pom_row = 0, pom_col = 0, pom = 0;
 
-//    static {
-//        try {
-//            screen = new DefaultTerminalFactory().createScreen();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
 
 
     public CheckersBoard(TextColor.ANSI uColor1,TextColor.ANSI uColor2) throws IOException, InterruptedException { // konstruktor
@@ -54,7 +49,7 @@ public class CheckersBoard implements ActionListener, MouseListener {
 
             if (keyPressed != null) {
                 System.out.println(keyPressed.toString());
-                if (keyPressed.getKeyType() == KeyType.Backspace) {
+                if (keyPressed.getKeyType() == KeyType.Backspace || keyPressed.getKeyType() == KeyType.EOF) {
                     keepRunning = false;
                     screen.stopScreen();
                     break;
@@ -169,9 +164,10 @@ public class CheckersBoard implements ActionListener, MouseListener {
 
                 if (i % 6 < 2 || i % 6 > 3) {
                     if (j % 3 == 0){
-                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(151,102,59), new TextColor.RGB(151,102,59)));
+                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
                     }else if (j % 3 == 2)
-           /*brazowy*/    screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(151,102,59), new TextColor.RGB(151,102,59)));
+                        /*brazowy*/
+                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
                     else
                         screen.setCharacter(i, j, new TextCharacter(' ', uCol1, uCol1));
                 } else {
@@ -203,7 +199,8 @@ public class CheckersBoard implements ActionListener, MouseListener {
     public static void printBrownField(int r, int c){
         for (int i = r; i < r + 6; i++) {
             for (int j = c; j < c + 3; j++) {
-/*brazowy*/    screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(151,102,59), new TextColor.RGB(151,102,59)));
+                /*brazowy*/
+                screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
             }
         }
     }
@@ -214,9 +211,11 @@ public class CheckersBoard implements ActionListener, MouseListener {
 
                 if (i % 6 < 2 || i % 6 > 3) {
                     if (j % 3 == 0)
-         /*brazowy*/    screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(151,102,59), new TextColor.RGB(151,102,59)));
+                        /*brazowy*/
+                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
                     else if (j % 3 == 2)
-         /*brazowy*/    screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(151,102,59), new TextColor.RGB(151,102,59)));
+                        /*brazowy*/
+                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
                     else
                         screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
                 } else {

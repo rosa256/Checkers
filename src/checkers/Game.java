@@ -36,27 +36,14 @@ public class Game {
             turnTime.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.END));
             turnTime.setReadOnly(true);
             CheckBox forceHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
-            CheckBox frontHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
             CheckBox backHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
-            frontHit.setChecked(true);
             backHit.setChecked(true);
 
             window.setHints(Collections.singletonList(Window.Hint.CENTERED));
             Panel contentPanel = new Panel(new GridLayout(1));
 
             Panel gamePanel = new Panel(new GridLayout(1));
-            gamePanel.addComponent(new Label("W trakcie gry, wciśnij przycisk aby zamknąć grę i wrócić do menu"));
-            gamePanel.addComponent(new Button("Powrót do menu", new Runnable() {
-                @Override
-                public void run() {
-                    window.setComponent(contentPanel);
-                    try {
-                        gameBoard[0].closeGame();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }));
+            gamePanel.addComponent(new Label("W trakcie gry, wróć do okna gry"));
             Button backButton = new Button("Cofnij", new Runnable() {
                 @Override
                 public void run() {
@@ -72,23 +59,13 @@ public class Game {
                         MessageDialog.showMessageDialog(textGUI, "Błąd: te same kolory graczy", "Kolory graczy nie mogą być takie same.", MessageDialogButton.OK);
                     } else {
                         try {
-                            gameBoard[0] = new CheckersBoard(userColor1.getSelectedItem(),userColor2.getSelectedItem());
                             window.setComponent(gamePanel);
+                            gameBoard[0] = new CheckersBoard(userColor1.getSelectedItem(),userColor2.getSelectedItem());
+                            window.setComponent(contentPanel);
                         } catch (IOException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
-//                    try {
-//                        finalScreen[0].stopScreen();
-//                        finalScreen[0] = terminalFactory.createScreen();
-//                        finalScreen[0].startScreen();
-//                        textGUI[0] = new MultiWindowTextGUI(finalScreen[0]);
-//                        window.setComponent(contentPanel);
-//                        textGUI[0].addWindowAndWait(window);
-//
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
                 }
             });
 
@@ -111,8 +88,6 @@ public class Game {
                     newPanel.addComponent(new Label("Opcje bicia").setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true, 2, 1)));
                     newPanel.addComponent(new Label("Wymuszenie bicia"));
                     newPanel.addComponent(forceHit);
-                    newPanel.addComponent(new Label("Bicie do przodu"));
-                    newPanel.addComponent(frontHit);
                     newPanel.addComponent(new Label("Bicie do tylu"));
                     newPanel.addComponent(backHit);
                     newPanel.addComponent(startGameButton);
