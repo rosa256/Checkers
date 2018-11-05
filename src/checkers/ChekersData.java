@@ -66,7 +66,6 @@ public class ChekersData {
             return false;
         }
         if (player == WHITE) {
-            System.out.println("Niedozwolony ruch#2");
             if (board[r1][c1] == WHITE && r2 == r1+1 && (c2==(c1+1) || c2==(c1-1))) {
                 return true;
             }
@@ -81,7 +80,29 @@ public class ChekersData {
             System.out.println("Niedozwolony ruch#4");
             return false;
         }
+    }
 
+    public boolean canJump(int player, int r1, int c1, int r2, int c2) {
+        if (board[r2][c2] != EMPTY) {
+            System.out.println("Niedozwolony skok#1");
+            return false;
+        }
+        if (player == WHITE) {
+            if (board[r1][c1] == WHITE && r2 == r1+2 && (c2==(c1+2) || c2==(c1-2)) && ((board[r1+1][c1+1] == BLACK || board[r1+1][c1-1] == BLACK)
+                    || (board[r1+1][c1+1] == BLACK_KING || board[r1+1][c1-1] == BLACK_KING))) {
+                return true;
+            }
+            System.out.println("Niedozwolony skok#3");
+            return false;
+        }
+        else {
+            if (board[r1][c1] == BLACK && r2 == r1-2 && (c2==(c1+2) || c2==(c1-2)) && ((board[r1-1][c1+1] == WHITE || board[r1-1][c1-1] == WHITE)
+                    || (board[r1-1][c1+1] == WHITE_KING) && board[r1-1][c1-1] == WHITE_KING)){
+                return true;
+            }
+            System.out.println("Niedozwolony skoks#4");
+            return false;
+        }
     }
 }
 
