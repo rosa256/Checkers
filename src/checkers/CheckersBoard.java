@@ -62,26 +62,26 @@ public class CheckersBoard implements ActionListener, MouseListener {
                 }else if (keyPressed.getKeyType() == KeyType.ArrowRight && pom_col < 7) {
                         pom_col = pom_col + 1;
                         initBoard();
-                        printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
+                        printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6, pom_row * 3);
                         screen.refresh();
 
                 }else if (keyPressed.getKeyType() == KeyType.ArrowLeft && pom_col > 0) {
                         pom_col = pom_col - 1;
                         initBoard();
-                        printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
+                        printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                         screen.refresh();
                 }else if (keyPressed.getKeyType() == KeyType.ArrowDown && pom_row < 7) {
                     pom_row = pom_row +1;
                     initBoard();
-                    printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
+                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                     screen.refresh();
                 }else if (keyPressed.getKeyType() == KeyType.ArrowUp && pom_row > 0) {
                     pom_row = pom_row -1;
                     initBoard();
-                    printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
+                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                     screen.refresh();
                 }else if (keyPressed.getKeyType() == KeyType.Enter) {
@@ -98,11 +98,23 @@ public class CheckersBoard implements ActionListener, MouseListener {
                         System.out.println("ToRow:"+selectedRowTo);
                         System.out.println("ToCol:"+selectedColTo);
                         enterCount++;
+
+                        if(board.getBoard()[selectedRowFrom][selectedColFrom]!=0) { // zaznaczone pole != EMPTY
+                                        System.out.println("Pierwszy");
+
+                            //CheckersMove[] moves = board.getLegalMoves(board.getBoard()[selectedRowFrom][selectedColFrom],selectedRowFrom,selectedColFrom);
+                            CheckersMove myMove = new CheckersMove(selectedRowFrom,selectedColFrom,selectedRowTo,selectedColTo);
+                            if(board.canMove(board.getBoard()[selectedRowFrom][selectedColFrom],selectedRowFrom,selectedColFrom,selectedRowTo,selectedColTo)) {
+                                        board.makeMove(myMove);
+                                        System.out.println("Poszlo");
+                            }
+                        }
                     }
                     /*
                     TU MUSI BYC CALA LOGIKA(operacje na tablicy intow)-board.board lub board.getboard() - to to samo))
                     ODNOSNIE RUCHU Z POLA X NA Y. Ze wzgledu na entercount==2
                     */
+
                     if (enterCount==2) {
                         selectedRowFrom = -1;
                         selectedColFrom = -1;
@@ -111,13 +123,13 @@ public class CheckersBoard implements ActionListener, MouseListener {
                         enterCount = 0;
                     }
                     initBoard();
-                    printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
+                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                     screen.refresh();
 
                 } else if (keyPressed.getKeyType() == KeyType.Escape){
                     initBoard();
-                    printBoard(board.board,uColor1,uColor2, selectedRowFrom, selectedColFrom);
+                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
                     printCursor(pom_col * 6,pom_row * 3);
                     screen.refresh();
                 }
@@ -151,7 +163,6 @@ public class CheckersBoard implements ActionListener, MouseListener {
             for (int col = 0; col < 8; col++) {
                 //if ( row % 2 == col % 2 ) {
                 if ( board[row][col] == 1) {
-
                     printFirstChecker(col * 6,row* 3,uColor1);
                 }
                 else if (board[row][col]==2){
