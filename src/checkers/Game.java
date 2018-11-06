@@ -32,12 +32,6 @@ public class Game {
             }
             ComboBox<TextColor.ANSI> userColor1 = new ComboBox<>(colorValues);
             ComboBox<TextColor.ANSI> userColor2 = new ComboBox<>(colorValues);
-            ComboBox<Integer> turnTime = new ComboBox<>(30, 45, 60, 75, 90);
-            turnTime.setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.END));
-            turnTime.setReadOnly(true);
-            CheckBox forceHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
-            CheckBox backHit = new CheckBox().setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.END, GridLayout.Alignment.BEGINNING));
-            backHit.setChecked(true);
 
             window.setHints(Collections.singletonList(Window.Hint.CENTERED));
             Panel contentPanel = new Panel(new GridLayout(1));
@@ -86,13 +80,6 @@ public class Game {
                     newPanel.addComponent(user2);
                     newPanel.addComponent(new Label("Kolor gracza 2"));
                     newPanel.addComponent(userColor2);
-                    newPanel.addComponent(new Label("Czas tury"));
-                    newPanel.addComponent(turnTime);
-                    newPanel.addComponent(new Label("Opcje bicia").setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.CENTER, GridLayout.Alignment.CENTER, true, true, 2, 1)));
-                    newPanel.addComponent(new Label("Wymuszenie bicia"));
-                    newPanel.addComponent(forceHit);
-                    newPanel.addComponent(new Label("Bicie do tylu"));
-                    newPanel.addComponent(backHit);
                     newPanel.addComponent(startGameButton);
                     newPanel.addComponent(backButton);
                     ((BasicWindow) window).setTitle("Nowa gra");
