@@ -83,26 +83,6 @@ public class ChekersData {
             System.out.println("Niedozwolony ruch#4");
             return false;
         }
-        if (player == WHITE_KING) {
-            if (board[r1][c1] == WHITE_KING && board[r2][c2] == EMPTY) {
-                if (r1 > r2 && c1 > c2) {
-                    int row = r1;
-                    int column = c1;
-                    int truth_counter = 0;
-                    while (row > r2 && column > c2) {
-                        if (board[row][column] == EMPTY)
-                            truth_counter++;
-                        row--;
-                        column--;
-                    }
-                    if (truth_counter == r1 - r2 - 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            }
-        }
         return false;
     }
 
