@@ -2,11 +2,13 @@ package checkers;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.dialogs.FileDialogBuilder;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,8 +53,7 @@ public class Game {
                 public void run() {
                     if (userColor1.getSelectedItem() == userColor2.getSelectedItem()) {
                         MessageDialog.showMessageDialog(textGUI, "Błąd: te same kolory graczy", "Kolory graczy nie mogą być takie same.", MessageDialogButton.OK);
-                    }
-                    if (user1.getText().equals("") || user2.getText().equals("")) {
+                    } else if (user1.getText().equals("") || user2.getText().equals("")) {
                         MessageDialog.showMessageDialog(textGUI, "Błąd: Któryś z graczy nie posiada nazwy", "Wszyscy gracze muszą mieć przypisane nazwy.", MessageDialogButton.OK);
                     } else {
                         try {
@@ -88,6 +89,12 @@ public class Game {
 
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
+            contentPanel.addComponent(new Button("Wczytaj gre z pliku", new Runnable() {
+                @Override
+                public void run() {
+                    File input = new FileDialogBuilder().setTitle("Otworz plik").setDescription("Wybierz plik").setActionLabel("Otworz").build().showDialog(textGUI);
+                }
+            }));
             contentPanel.addComponent(new Button("Instrukcja gry", new Runnable() {
                 @Override
                 public void run() {
