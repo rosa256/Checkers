@@ -9,7 +9,6 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.TimeZone;
 
 public class CheckersBoard {
@@ -28,7 +27,7 @@ public class CheckersBoard {
     static int pom_row = 0, pom_col = 0;
     long startingTime = System.currentTimeMillis();
     static TextGraphics TG;
-    static timeCounter tc;
+//    static TimeCounter tc;
 
 
     public CheckersBoard(TextColor.ANSI uColor1, TextColor.ANSI uColor2, String name1, String name2) throws IOException, InterruptedException { // konstruktor
@@ -37,7 +36,7 @@ public class CheckersBoard {
         ChekersData board = new ChekersData(); // nasza plansza pomocnicza
         doNewGame(board);
         screen.startScreen();
-        tc = new timeCounter();
+//        tc = new TimeCounter();
         TG = screen.newTextGraphics();
         screen.doResizeIfNecessary();
         initBoard();
@@ -154,11 +153,11 @@ public class CheckersBoard {
         tg.setForegroundColor(uColor2);
         tg.putString(new TerminalPosition(58, 22), username2, SGR.BOLD, SGR.ITALIC);
         tg.setForegroundColor(TextColor.ANSI.DEFAULT);
-        Date date = new Date(tc.getElapsedTime());
+//        Date date = new Date(tc.getElapsedTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String formatted = formatter.format(date);
-        tg.putString(new TerminalPosition(60, 10), formatted);
+//        String formatted = formatter.format(date);
+//        tg.putString(new TerminalPosition(60, 10), formatted);
     }
 
     public static void printBoard(int[][] board, TextColor.ANSI uColor1, TextColor.ANSI uColor2, int selectedRowFrom, int selectedColFrom) throws IOException {
