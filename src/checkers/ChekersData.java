@@ -1,5 +1,7 @@
 package checkers;
 
+import java.util.ArrayList;
+
 public class ChekersData {
     // Klasa ktora przechowuje informacje o Białych i Czarnych pionkach.
     // Informacje o polozeniu pionkow na mapie itp. rozwinie się jeszcze
@@ -41,6 +43,10 @@ public class ChekersData {
 
     public void makeMove(CheckersMove move) {
         makeMove(move.fromRow, move.fromCol, move.toRow, move.toCol);
+    }
+
+    public void kingMove(CheckersMove move) {
+        kingMove(move.fromRow, move.fromCol, move.toRow, move.toCol);
     }
 
     public void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
@@ -100,6 +106,67 @@ public class ChekersData {
         return false;
     }
 
+    public boolean canKingMoveJump(int player, int rowFrom, int rowTo, int colFrom, int colTo) {
+        if (player == WHITE_KING) {
+            int row_position, col_position;
+            int count = 0;
+            ArrayList<Integer> tab = new ArrayList<>();
+            if (rowFrom > rowTo && colFrom > colTo) { // lewy_gorny
+                col_position = colFrom;
+                for (int i = rowFrom; i >= rowTo; i--) {
+                    tab.add(board[i][col_position]);
+                    col_position--;
+                }
+            } else if (rowFrom > rowTo && colFrom < colTo) { // prawy_gorny
+                col_position = colFrom;
+                for (int i = rowFrom; i >= rowTo; i--) {
+                    tab.add(board[i][col_position]);
+                    col_position++;
+                }
+            } else if (rowFrom < rowTo && colFrom < colTo) { // prawy_dolny
+                col_position = colFrom;
+                for (int i = rowFrom; i <= rowTo; i++) {
+                    tab.add(board[i][col_position]);
+                    col_position++;
+                }
+            } else if (rowFrom < rowTo && colFrom > colTo) { // lewy_dolny
+                col_position = colFrom;
+                for (int i = rowFrom; i <= rowTo; i++) {
+                    tab.add(board[i][col_position]);
+                    col_position--;
+                }
+            } else
+                return false;
+            return checkKingMove(tab);
+
+        } else if (player == BLACK_KING) {
+            return false;
+        }
+        return false;
+    }
+
+    private boolean checkKingMove(ArrayList<Integer> tab) {
+        int player = tab.get(0);
+        int size = tab.size();
+        boolean flag = true;
+
+        for (int i = 1; i < tab.size(); i++) {
+            if (player == WHITE_KING) {
+                if (tab.get(i) == WHITE || tab.get(i) == WHITE_KING) {
+                    flag = false;
+                    break;
+                } else if ((tab.get(i) == tab.get((i - 1) % size) && tab.get(i) != EMPTY && tab.get((i - 1) % size) != EMPTY) || (tab.get(i) == tab.get((i + 1) % size) && tab.get(i) != EMPTY && tab.get((i + 1) % size) != EMPTY)) {
+                    flag = false;
+                    break;
+                } else if (tab.get(size - 1) != EMPTY) {
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
+
 
     public boolean canJump(int player, int r1, int c1, int r2, int c2) {
         if (board[r2][c2] != EMPTY) {
@@ -120,6 +187,39 @@ public class ChekersData {
             System.out.println("Niedozwolony skok#4");
             return false;
         }
+    }
+
+    public void kingMove(int fromRow, int fromCol, int toRow, int toCol) {
+        board[toRow][toCol] = board[fromRow][fromCol];
+        board[fromRow][fromCol] = EMPTY;
+        int col_position;
+
+        if (fromRow > toRow && fromCol > toCol) { // lewy_gorny
+            col_position = fromCol;
+            for (int i = fromRow; i > toRow; i--) {
+                board[i][col_position] = EMPTY;
+                col_position--;
+            }
+        } else if (fromRow > toRow && fromCol < toCol) { // prawy_gorny
+            col_position = fromCol;
+            for (int i = fromRow; i > toRow; i--) {
+                board[i][col_position] = EMPTY;
+                col_position++;
+            }
+        } else if (fromRow < toRow && fromCol < toCol) { // prawy_dolny
+            col_position = fromCol;
+            for (int i = fromRow; i < toRow; i++) {
+                board[i][col_position] = EMPTY;
+                col_position++;
+            }
+        } else if (fromRow < toRow && fromCol > toCol) { // lewy_dolny
+            col_position = fromCol;
+            for (int i = fromRow; i < toRow; i++) {
+                board[i][col_position] = EMPTY;
+                col_position--;
+            }
+        }
+
     }
 }
 
