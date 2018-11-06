@@ -20,13 +20,13 @@ public class ChekersData {
     public void setUpGame() {
         board = new int[][]{
                 {0, 1, 0, 1, 0, 1, 0, 1},
-                {1, 0, 1, 0, 1, 0, 1, 0},
-                {0, 1, 0, 1, 0, 1, 0, 1},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0},
-                {2, 0, 2, 0, 2, 0, 2, 0},
+                {3, 0, 1, 0, 1, 0, 1, 0},
+                {0, 0, 0, 1, 0, 1, 0, 1},
+                {0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0},
+                {2, 0, 2, 0, 0, 0, 2, 0},
                 {0, 2, 0, 2, 0, 2, 0, 2},
-                {2, 0, 2, 0, 2, 0, 2, 0}};
+                {2, 0, 2, 0, 2, 0, 0, 0}};
     } //tworzy czystą planszę z poustawianymi pionkami
 
     int[][] getBoard() {
@@ -63,20 +63,20 @@ public class ChekersData {
             board[toRow][toCol] = WHITE_KING;
     }
 
-    public boolean canMove(int player, int r1, int c1, int r2, int c2) {
+    public boolean canMove(int player, int r1, int c1, int r2, int c2, int turn) {
 
         if (board[r2][c2] != EMPTY) {
             System.out.println("Niedozwolony ruch#1");
             return false;
         }
-        if (player == WHITE) {
+        if (player == WHITE && turn == 0) {
             if (board[r1][c1] == WHITE && r2 == r1 + 1 && (c2 == (c1 + 1) || c2 == (c1 - 1))) {
                 return true;
             }
             System.out.println("Niedozwolony ruch#3");
             return false;
         }
-        if (player == BLACK) {
+        if (player == BLACK && turn == 1) {
             if (board[r1][c1] == BLACK && r2 == r1 - 1 && (c2 == (c1 + 1) || c2 == (c1 - 1))) {
                 return true;
             }
@@ -92,8 +92,8 @@ public class ChekersData {
                     while (row > r2 && column > c2) {
                         if (board[row][column] == EMPTY)
                             truth_counter++;
-                        row -= 2;
-                        column -= 2;
+                        row--;
+                        column--;
                     }
                     if (truth_counter == r1 - r2 - 1) {
                         return true;
@@ -220,6 +220,23 @@ public class ChekersData {
             }
         }
 
+    }
+
+    int isOver() {
+        ArrayList<Integer> whole_board = new ArrayList<>();
+        int counter = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                whole_board.add(board[i][j]);
+            }
+        }
+        if (!whole_board.contains(2) && !whole_board.contains(4)) {
+            return 0;
+        } else if (!whole_board.contains(1) && !whole_board.contains(3)) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }
 
