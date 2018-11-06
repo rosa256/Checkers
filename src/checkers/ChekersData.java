@@ -8,7 +8,7 @@ public class ChekersData {
     // Informacje o polozeniu pionkow na mapie itp. rozwinie się jeszcze
 
     // Białe Pionki to 1 a czarne to 2 i to będzie na tablicy intow
-    public static final int EMPTY = 0, WHITE = 1, BLACK = 2, WHITE_KING = 3, BLACK_KING = 4, CURSOR = 5;
+    public static final int EMPTY = 0, WHITE = 1, BLACK = 2, WHITE_KING = 3, BLACK_KING = 4;
 
 
     private static int board[][];     // Mapa intow - tak naprawde to bedzie nasza plansza pomocnicza - board[r][c]
@@ -19,8 +19,9 @@ public class ChekersData {
     }
 
     public void setUpGame() {
-        board = new int[][]{{0, 1, 0, 1, 0, 1, 0, 1},
-                {1, 0, 1, 0, 1, 0, 1, 0},
+        board = new int[][]{
+                {0, 1, 0, 1, 0, 1, 0, 1},
+                {1, 0, 1, 0, 0, 0, 1, 0},
                 {0, 1, 0, 1, 0, 1, 0, 1},
                 {0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0},
@@ -53,10 +54,10 @@ public class ChekersData {
             int jumpCol = (fromCol + toCol) / 2;
             board[jumpRow][jumpCol] = EMPTY;
         }
-        if (toRow == 0 && board[toRow][toCol] == WHITE)
-            board[toRow][toCol] = WHITE_KING;
-        if (toRow == 7 && board[toRow][toCol] == BLACK)
+        if (toRow == 0 && board[toRow][toCol] == BLACK)
             board[toRow][toCol] = BLACK_KING;
+        if (toRow == 7 && board[toRow][toCol] == WHITE)
+            board[toRow][toCol] = WHITE_KING;
     }
 
     public boolean canMove(int player, int r1, int c1, int r2, int c2) {
@@ -74,7 +75,6 @@ public class ChekersData {
         }
         else {
             if (board[r1][c1] == BLACK && r2 == r1-1 && (c2==(c1+1) || c2==(c1-1))) {
-                System.out.println("mm5");
                 return true;
             }
             System.out.println("Niedozwolony ruch#4");
@@ -100,7 +100,7 @@ public class ChekersData {
                     || (board[r1-1][c1+1] == WHITE_KING) && board[r1-1][c1-1] == WHITE_KING)){
                 return true;
             }
-            System.out.println("Niedozwolony skoks#4");
+            System.out.println("Niedozwolony skok#4");
             return false;
         }
     }
