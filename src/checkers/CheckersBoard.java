@@ -96,19 +96,25 @@ public class CheckersBoard {
                         enterCount++;
                         System.out.println(board.getBoard()[0][3]);
                         System.out.println(board.getBoard()[7][4]);
-                        if(board.getBoard()[selectedRowFrom][selectedColFrom]!=0) { // zaznaczone pole != EMPTY
+                        int current_checker = board.getBoard()[selectedRowFrom][selectedColFrom];
+                        if (current_checker != 0) { // zaznaczone pole != EMPTY
 
                             CheckersMove myMove = new CheckersMove(selectedRowFrom,selectedColFrom,selectedRowTo,selectedColTo);
-                            if(selectedRowFrom +1 == selectedRowTo || selectedRowFrom - 1 == selectedRowTo) {
-                                if (board.canMove(board.getBoard()[selectedRowFrom][selectedColFrom], selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
+                            if ((selectedRowFrom + 1 == selectedRowTo || selectedRowFrom - 1 == selectedRowTo) && (current_checker == 1 || current_checker == 2)) {
+                                if (board.canMove(current_checker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
                                     board.makeMove(myMove);
                                     System.out.println("Move");
                                 }
-                            }else if(selectedRowFrom + 2 == selectedRowTo || selectedRowFrom - 2 == selectedRowTo) {
-                                if (board.canJump(board.getBoard()[selectedRowFrom][selectedColFrom], selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
+                            } else if ((selectedRowFrom + 2 == selectedRowTo || selectedRowFrom - 2 == selectedRowTo) && (current_checker == 1 || current_checker == 2)) {
+                                if (board.canJump(current_checker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
                                     board.makeMove(myMove);
                                     System.out.println("Jump");
                                 }
+                            } else if (current_checker == 3) {
+                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo)) {
+                                    System.out.println("Damka ruszyla sie");
+                                    board.kingMove(myMove);
+                                } else System.out.println("NI HU JA");
                             }
                         }
                     }
