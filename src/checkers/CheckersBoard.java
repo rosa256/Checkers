@@ -7,10 +7,6 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -150,13 +146,13 @@ public class CheckersBoard {
 
     public static void printInterface(TextColor.ANSI uColor1, TextColor.ANSI uColor2, long startingTime, TextGraphics tg, String username1, String username2) {
         tg.drawRectangle(new TerminalPosition(48, 0), new TerminalSize(screen.getTerminalSize().getColumns() - 48, screen.getTerminalSize().getRows()), new TextCharacter('*', new TextColor.RGB(132, 216, 99), new TextColor.RGB(10, 10, 10)));
-        tg.putString(new TerminalPosition(49, 1), "Gracz 2: ", SGR.BOLD);
-        tg.setForegroundColor(uColor2);
-        tg.putString(new TerminalPosition(58, 1), username2, SGR.BOLD, SGR.ITALIC);
-        tg.setForegroundColor(TextColor.ANSI.DEFAULT);
-        tg.putString(new TerminalPosition(49, 22), "Gracz 1: ", SGR.BOLD);
+        tg.putString(new TerminalPosition(49, 1), "Gracz 1: ", SGR.BOLD);
         tg.setForegroundColor(uColor1);
-        tg.putString(new TerminalPosition(58, 22), username1, SGR.BOLD, SGR.ITALIC);
+        tg.putString(new TerminalPosition(58, 1), username1, SGR.BOLD, SGR.ITALIC);
+        tg.setForegroundColor(TextColor.ANSI.DEFAULT);
+        tg.putString(new TerminalPosition(49, 22), "Gracz 2: ", SGR.BOLD);
+        tg.setForegroundColor(uColor2);
+        tg.putString(new TerminalPosition(58, 22), username2, SGR.BOLD, SGR.ITALIC);
         tg.setForegroundColor(TextColor.ANSI.DEFAULT);
         Date date = new Date(tc.getElapsedTime());
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
