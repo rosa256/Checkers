@@ -2,13 +2,11 @@ package checkers;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.gui2.dialogs.FileDialogBuilder;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialogButton;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,12 +87,6 @@ public class Game {
 
                 }
             }).setLayoutData(GridLayout.createLayoutData(GridLayout.Alignment.BEGINNING, GridLayout.Alignment.CENTER)));
-            contentPanel.addComponent(new Button("Wczytaj gre z pliku", new Runnable() {
-                @Override
-                public void run() {
-                    File input = new FileDialogBuilder().setTitle("Otworz plik").setDescription("Wybierz plik").setActionLabel("Otworz").build().showDialog(textGUI);
-                }
-            }));
             contentPanel.addComponent(new Button("Instrukcja gry", new Runnable() {
                 @Override
                 public void run() {

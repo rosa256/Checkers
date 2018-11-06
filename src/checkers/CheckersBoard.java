@@ -118,7 +118,7 @@ public class CheckersBoard {
                                     System.out.println("Move");
                                 }
                             } else if ((selectedRowFrom + 2 == selectedRowTo || selectedRowFrom - 2 == selectedRowTo) && (current_checker == 1 || current_checker == 2)) {
-                                if (board.canJump(current_checker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
+                                if (board.canJump(current_checker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo, turn)) {
                                     board.makeMove(myMove);
                                     if (turn == 0) {
                                         turn = 1;
@@ -128,7 +128,7 @@ public class CheckersBoard {
                                     System.out.println("Jump");
                                 }
                             } else if (current_checker == 3) {
-                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo)) {
+                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo, turn)) {
                                     System.out.println("Damka ruszyla sie");
                                     board.kingMove(myMove);
                                     if (turn == 0) {
@@ -138,7 +138,7 @@ public class CheckersBoard {
                                     }
                                 } else System.out.println("NI HU JA");
                             } else if (current_checker == 4) {
-                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo)) {
+                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo, turn)) {
                                     System.out.println("Damka ruszyla sie");
                                     board.kingMove(myMove);
                                     if (turn == 0) {

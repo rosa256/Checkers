@@ -19,14 +19,14 @@ public class ChekersData {
 
     public void setUpGame() {
         board = new int[][]{
-                {0, 1, 0, 4, 0, 1, 0, 1},
-                {3, 0, 1, 0, 1, 0, 1, 0},
-                {0, 0, 0, 1, 0, 1, 0, 1},
-                {0, 0, 2, 0, 0, 0, 0, 0},
-                {0, 0, 0, 2, 0, 0, 0, 0},
-                {2, 0, 2, 0, 0, 0, 2, 0},
+                {0, 1, 0, 1, 0, 1, 0, 1},
+                {1, 0, 1, 0, 1, 0, 1, 0},
+                {0, 1, 0, 1, 0, 1, 0, 1},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0},
+                {2, 0, 2, 0, 2, 0, 2, 0},
                 {0, 2, 0, 2, 0, 2, 0, 2},
-                {2, 0, 2, 0, 2, 0, 0, 0}};
+                {2, 0, 2, 0, 2, 0, 2, 0}};
     } //tworzy czystą planszę z poustawianymi pionkami
 
     int[][] getBoard() {
@@ -106,10 +106,9 @@ public class ChekersData {
         return false;
     }
 
-    public boolean canKingMoveJump(int player, int rowFrom, int rowTo, int colFrom, int colTo) {
-        if (player == WHITE_KING || player == BLACK_KING) {
-            int row_position, col_position;
-            int count = 0;
+    public boolean canKingMoveJump(int player, int rowFrom, int rowTo, int colFrom, int colTo, int turn) {
+        if (player == WHITE_KING && turn == 0) {
+            int col_position;
             ArrayList<Integer> tab = new ArrayList<>();
             if (rowFrom > rowTo && colFrom > colTo) { // lewy_gorny
                 col_position = colFrom;
@@ -139,6 +138,8 @@ public class ChekersData {
                 return false;
             return checkKingMove(tab);
 
+        } else if (player == BLACK_KING && turn == 1) {
+            return false;
         }
         return false;
     }
@@ -177,25 +178,25 @@ public class ChekersData {
     }
 
 
-    public boolean canJump(int player, int r1, int c1, int r2, int c2) {
+    public boolean canJump(int player, int r1, int c1, int r2, int c2, int turn) {
         if (board[r2][c2] != EMPTY) {
             System.out.println("Niedozwolony skok#1");
             return false;
         }
-        if (player == WHITE) {
+        if (player == WHITE && turn == 0) {
             if (board[r1][c1] == WHITE && r2 == r1 + 2 && (c2 == (c1 + 2) || c2 == (c1 - 2)) && ((board[(r1 + r2) / 2][(c1 + c2) / 2] == BLACK) || (board[(r1 + r2) / 2][(c1 + c2) / 2] == BLACK_KING))) {
                 return true;
             }
             System.out.println("Niedozwolony skok#3");
             return false;
-        }
-        else {
+        } else if (player == BLACK && turn == 1) {
             if (board[r1][c1] == BLACK && r2 == r1 - 2 && (c2 == (c1 + 2) || c2 == (c1 - 2)) && ((board[(r1 + r2) / 2][(c1 + c2) / 2] == WHITE) || (board[(r1 + r2) / 2][(c1 + c2) / 2] == WHITE_KING))) {
                 return true;
             }
             System.out.println("Niedozwolony skok#4");
             return false;
         }
+        return false;
     }
 
     public void kingMove(int fromRow, int fromCol, int toRow, int toCol) {
