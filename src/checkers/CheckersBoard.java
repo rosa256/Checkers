@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CheckersBoard implements ActionListener, MouseListener {
+public class CheckersBoard {
     //Tu bym zrobil wyswietlanie calej planszy gry
     //i umozliwienie na reagowanie myszki - dlatego implementuje
     // dwa interfejsy ActionListener i MousListener
@@ -98,11 +98,10 @@ public class CheckersBoard implements ActionListener, MouseListener {
                         System.out.println("ToRow:"+selectedRowTo);
                         System.out.println("ToCol:"+selectedColTo);
                         enterCount++;
-
+                        System.out.println(board.getBoard()[0][3]);
+                        System.out.println(board.getBoard()[7][4]);
                         if(board.getBoard()[selectedRowFrom][selectedColFrom]!=0) { // zaznaczone pole != EMPTY
-                                        System.out.println("Pierwszy");
 
-                            //CheckersMove[] moves = board.getLegalMoves(board.getBoard()[selectedRowFrom][selectedColFrom],selectedRowFrom,selectedColFrom);
                             CheckersMove myMove = new CheckersMove(selectedRowFrom,selectedColFrom,selectedRowTo,selectedColTo);
                             if(selectedRowFrom +1 == selectedRowTo || selectedRowFrom - 1 == selectedRowTo) {
                                 if (board.canMove(board.getBoard()[selectedRowFrom][selectedColFrom], selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo)) {
@@ -117,10 +116,6 @@ public class CheckersBoard implements ActionListener, MouseListener {
                             }
                         }
                     }
-                    /*
-                    TU MUSI BYC CALA LOGIKA(operacje na tablicy intow)-board.board lub board.getboard() - to to samo))
-                    ODNOSNIE RUCHU Z POLA X NA Y. Ze wzgledu na entercount==2
-                    */
 
                     if (enterCount==2) {
                         selectedRowFrom = -1;
@@ -173,13 +168,16 @@ public class CheckersBoard implements ActionListener, MouseListener {
     public static void printBoard(int[][] board, TextColor.ANSI uColor1, TextColor.ANSI uColor2, int selectedRowFrom, int selectedColFrom) throws IOException {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                //if ( row % 2 == col % 2 ) {
                 if ( board[row][col] == 1) {
                     printFirstChecker(col * 6,row* 3,uColor1);
                 }
                 else if (board[row][col]==2){
                     printSecoundChecker(col * 6, row * 3,uColor2);
                 }
+                else if( board[row][col] == 3)
+                    printFirstKing(col * 6, row * 3,uColor1);
+                else if( board[row][col] == 4)
+                    printSecoundKing(col * 6, row * 3,uColor2);
             }
         }
         if(selectedColFrom != -1 && selectedRowFrom != -1){
@@ -258,6 +256,30 @@ public class CheckersBoard implements ActionListener, MouseListener {
         }
     }
 
+    public static void printFirstKing(int row, int col, TextColor.ANSI uCol1){
+        for (int i = row; i < row + 6; i++) {
+            for (int j = col; j < col + 3; j++) {
+                if(j%3==2)
+                screen.setCharacter(i, j, new TextCharacter(' ', uCol1, uCol1));
+                else if ((j%3==1 && (i%6>0 && i%6< 5))||((j%3==0 && (i%6>1 && i%6< 4))))
+                screen.setCharacter(i, j, new TextCharacter(' ', uCol1, uCol1));
+            }
+        }
+    }
+
+    public static void printSecoundKing(int row, int col, TextColor.ANSI uCol2){
+        for (int i = row; i < row + 6; i++) {
+            for (int j = col; j < col + 3; j++) {
+                if(j%3==2)
+                    screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
+                else if (j%3==1 && (i%6>0 && i%6< 5))
+                    screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
+                else if (j%3==0 && (i%6>1 && i%6< 4))
+                    screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
+            }
+        }
+    }
+
 
     public static void printBrownField(int r, int c){
         for (int i = r; i < r + 6; i++) {
@@ -287,19 +309,4 @@ public class CheckersBoard implements ActionListener, MouseListener {
             }
         }
     }
-
-    //zeby nie bawic sie w animacje przenoszenia pionka z jednego pola na drugie
-    //latiwej chyba bedzie 1.nacisnac myszka pole na ktore chce sie ruszyc po czym wybrac pionek ktory ma sie w tamto miejsce ruszyc
-    // oczywiscie bedzie trzeba to obsluzyc pod wzgledem poprawnosci ruchu
-    public void mousePressed(MouseEvent e) {
-        int col = e.getX();
-        int row = e.getY();
-    }
-
-
-    public void actionPerformed(ActionEvent e) { }
-    public void mouseClicked(MouseEvent e) { }
-    public void mouseReleased(MouseEvent e) { }
-    public void mouseEntered(MouseEvent e) { }
-    public void mouseExited(MouseEvent e) { }
 }
