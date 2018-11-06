@@ -137,6 +137,16 @@ public class CheckersBoard {
                                         turn = 0;
                                     }
                                 } else System.out.println("NI HU JA");
+                            } else if (current_checker == 4) {
+                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo)) {
+                                    System.out.println("Damka ruszyla sie");
+                                    board.kingMove(myMove);
+                                    if (turn == 0) {
+                                        turn = 1;
+                                    } else if (turn == 1) {
+                                        turn = 0;
+                                    }
+                                } else System.out.println("NI HU JA");
                             }
                         }
                     }

@@ -19,7 +19,7 @@ public class ChekersData {
 
     public void setUpGame() {
         board = new int[][]{
-                {0, 1, 0, 1, 0, 1, 0, 1},
+                {0, 1, 0, 4, 0, 1, 0, 1},
                 {3, 0, 1, 0, 1, 0, 1, 0},
                 {0, 0, 0, 1, 0, 1, 0, 1},
                 {0, 0, 2, 0, 0, 0, 0, 0},
@@ -107,7 +107,7 @@ public class ChekersData {
     }
 
     public boolean canKingMoveJump(int player, int rowFrom, int rowTo, int colFrom, int colTo) {
-        if (player == WHITE_KING) {
+        if (player == WHITE_KING || player == BLACK_KING) {
             int row_position, col_position;
             int count = 0;
             ArrayList<Integer> tab = new ArrayList<>();
@@ -139,8 +139,6 @@ public class ChekersData {
                 return false;
             return checkKingMove(tab);
 
-        } else if (player == BLACK_KING) {
-            return false;
         }
         return false;
     }
@@ -153,6 +151,17 @@ public class ChekersData {
         for (int i = 1; i < tab.size(); i++) {
             if (player == WHITE_KING) {
                 if (tab.get(i) == WHITE || tab.get(i) == WHITE_KING) {
+                    flag = false;
+                    break;
+                } else if ((tab.get(i) == tab.get((i - 1) % size) && tab.get(i) != EMPTY && tab.get((i - 1) % size) != EMPTY) || (tab.get(i) == tab.get((i + 1) % size) && tab.get(i) != EMPTY && tab.get((i + 1) % size) != EMPTY)) {
+                    flag = false;
+                    break;
+                } else if (tab.get(size - 1) != EMPTY) {
+                    flag = false;
+                    break;
+                }
+            } else if (player == BLACK_KING) {
+                if (tab.get(i) == BLACK || tab.get(i) == BLACK_KING) {
                     flag = false;
                     break;
                 } else if ((tab.get(i) == tab.get((i - 1) % size) && tab.get(i) != EMPTY && tab.get((i - 1) % size) != EMPTY) || (tab.get(i) == tab.get((i + 1) % size) && tab.get(i) != EMPTY && tab.get((i + 1) % size) != EMPTY)) {
