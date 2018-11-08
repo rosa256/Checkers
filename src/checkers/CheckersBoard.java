@@ -12,182 +12,130 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class CheckersBoard {
+class CheckersBoard {
     //Tu bym zrobil wyswietlanie calej planszy gry
     //i umozliwienie na reagowanie myszki - dlatego implementuje
     // dwa interfejsy ActionListener i MousListener
     //Bardzo możliwe, że coś się zmieni, po prostu teraz mam taka wizję
     //Uwaga: Czesc zmiennych tak implementuje bo moga sie przydac
 
-
-    boolean gameInProgress;         // moze sie przydac
-    int enterCount;              // czyj jest teraz ruch
-    int selectedRowFrom, selectedColFrom;   // sluzy do przechowania na ktore miejsce sie ruszyl gracz
-    int selectedRowTo, selectedColTo;   // sluzy do przechowania na ktore miejsce sie ruszyl gracz
-    private static Screen screen;
-    static int pom_row, pom_col;
-    static TextGraphics TG;
-    static TimeCounter tc;
-    static int turn;
-    static ChekersData board;
+    private Screen screen;
+    private TimeCounter timeCounter;
+    private int turn;
+    private CheckersData board;
 
 
-    public CheckersBoard(TextColor.ANSI uColor1, TextColor.ANSI uColor2, String name1, String name2) throws IOException, InterruptedException { // konstruktor
-        selectedRowTo = -1;
-        selectedColTo = -1;
-        selectedRowFrom = -1;
-        selectedColFrom = -1;
-        enterCount = 0;
-        pom_row = 0;
-        pom_col = 0;
+    CheckersBoard(TextColor.ANSI uColor1, TextColor.ANSI uColor2, String name1, String name2) throws IOException { // konstruktor
+        int selectedRowTo;
+        int selectedColTo;
+        int selectedRowFrom = -1;
+        int selectedColFrom = -1;
+        int enterCount = 0;
+        int pomRow = 0;
+        int pomCol = 0;
         turn = 0;
         screen = new DefaultTerminalFactory().createScreen();
-        board = new ChekersData(); // nasza plansza pomocnicza
-        doNewGame(board);
+        board = new CheckersData(); // nasza plansza pomocnicza
         screen.startScreen();
-        tc = new TimeCounter();
-        TG = screen.newTextGraphics();
+        timeCounter = new TimeCounter();
+        TextGraphics textGraphics = screen.newTextGraphics();
         screen.doResizeIfNecessary();
         initBoard();
-        printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
-        printCursor(0,0);
+        printBoard(board.getBoard(), uColor1, uColor2, selectedRowFrom, selectedColFrom);
+        printCursor(0, 0);
         screen.refresh();
 
-        boolean keepRunning = true;
-        while (keepRunning) {
+        while (true) {
             KeyStroke keyPressed = screen.pollInput();
-            printInterface(uColor1, uColor2, TG, name1, name2);
+            printInterface(uColor1, uColor2, textGraphics, name1, name2);
             if (keyPressed != null) {
-                System.out.println(keyPressed.toString());
+
                 if (keyPressed.getKeyType() == KeyType.Backspace || keyPressed.getKeyType() == KeyType.EOF) {
                     screen.stopScreen();
                     break;
-                }else if (keyPressed.getKeyType() == KeyType.ArrowRight && pom_col < 7) {
-                        pom_col = pom_col + 1;
-                        initBoard();
-                        printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
-                    printCursor(pom_col * 6, pom_row * 3);
-                        screen.refresh();
+                } else if (keyPressed.getKeyType() == KeyType.ArrowRight && pomCol < 7) {
+                    pomCol = pomCol + 1;
+                    refreshBoard(uColor1, uColor2, selectedRowFrom, selectedColFrom, pomRow, pomCol);
 
-                }else if (keyPressed.getKeyType() == KeyType.ArrowLeft && pom_col > 0) {
-                        pom_col = pom_col - 1;
-                        initBoard();
-                        printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
-                    printCursor(pom_col * 6,pom_row * 3);
-                        screen.refresh();
-                }else if (keyPressed.getKeyType() == KeyType.ArrowDown && pom_row < 7) {
-                    pom_row = pom_row +1;
-                    initBoard();
-                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
-                    printCursor(pom_col * 6,pom_row * 3);
-                    screen.refresh();
-                }else if (keyPressed.getKeyType() == KeyType.ArrowUp && pom_row > 0) {
-                    pom_row = pom_row -1;
-                    initBoard();
-                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
-                    printCursor(pom_col * 6,pom_row * 3);
-                    screen.refresh();
-                }else if (keyPressed.getKeyType() == KeyType.Enter) {
-                    if(enterCount==0) {
-                        selectedRowFrom = pom_row;
-                        selectedColFrom = pom_col;
-
+                } else if (keyPressed.getKeyType() == KeyType.ArrowLeft && pomCol > 0) {
+                    pomCol = pomCol - 1;
+                    refreshBoard(uColor1, uColor2, selectedRowFrom, selectedColFrom, pomRow, pomCol);
+                } else if (keyPressed.getKeyType() == KeyType.ArrowDown && pomRow < 7) {
+                    pomRow = pomRow + 1;
+                    refreshBoard(uColor1, uColor2, selectedRowFrom, selectedColFrom, pomRow, pomCol);
+                } else if (keyPressed.getKeyType() == KeyType.ArrowUp && pomRow > 0) {
+                    pomRow = pomRow - 1;
+                    refreshBoard(uColor1, uColor2, selectedRowFrom, selectedColFrom, pomRow, pomCol);
+                } else if (keyPressed.getKeyType() == KeyType.Enter) {
+                    if (enterCount == 0) {
+                        selectedRowFrom = pomRow;
+                        selectedColFrom = pomCol;
                         enterCount++;
-                    }else if(enterCount==1) {
-                        selectedRowTo = pom_row;
-                        selectedColTo = pom_col;
-                        System.out.println("FromRow:"+selectedRowFrom);
-                        System.out.println("FromCol:"+selectedColFrom);
-                        System.out.println("ToRow:"+selectedRowTo);
-                        System.out.println("ToCol:"+selectedColTo);
+                    } else if (enterCount == 1) {
+                        selectedRowTo = pomRow;
+                        selectedColTo = pomCol;
                         enterCount++;
-                        System.out.println(board.getBoard()[0][3]);
-                        System.out.println(board.getBoard()[7][4]);
-                        int current_checker = board.getBoard()[selectedRowFrom][selectedColFrom];
-                        if (current_checker != 0) { // zaznaczone pole != EMPTY
 
-                            CheckersMove myMove = new CheckersMove(selectedRowFrom,selectedColFrom,selectedRowTo,selectedColTo);
-                            if ((selectedRowFrom + 1 == selectedRowTo || selectedRowFrom - 1 == selectedRowTo) && (current_checker == 1 || current_checker == 2)) {
-                                if (board.canMove(current_checker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo, turn)) {
+
+                        int currentChecker = board.getBoard()[selectedRowFrom][selectedColFrom];
+                        if (currentChecker != CheckersData.EMPTY) { // zaznaczone pole != EMPTY
+
+                            CheckersMove myMove = new CheckersMove(selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo);
+                            if ((selectedRowFrom + 1 == selectedRowTo || selectedRowFrom - 1 == selectedRowTo) && (currentChecker == CheckersData.WHITE || currentChecker == CheckersData.BLACK)) {
+                                if (board.canMove(currentChecker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo, turn)) {
                                     board.makeMove(myMove);
-                                    if (turn == 0) {
-                                        turn = 1;
-                                    } else if (turn == 1) {
-                                        turn = 0;
-                                    }
-                                    System.out.println("Move");
+                                    changeTurn();
+
                                 }
-                            } else if ((selectedRowFrom + 2 == selectedRowTo || selectedRowFrom - 2 == selectedRowTo) && (current_checker == 1 || current_checker == 2)) {
-                                if (board.canJump(current_checker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo, turn)) {
+                            } else if ((selectedRowFrom + 2 == selectedRowTo || selectedRowFrom - 2 == selectedRowTo) && (currentChecker == 1 || currentChecker == 2)) {
+                                if (board.canJump(currentChecker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo, turn)) {
                                     board.makeMove(myMove);
-                                    if (turn == 0) {
-                                        turn = 1;
-                                    } else if (turn == 1) {
-                                        turn = 0;
-                                    }
-                                    System.out.println("Jump");
+                                    changeTurn();
+
                                 }
-                            } else if (current_checker == 3) {
-                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo, turn)) {
-                                    System.out.println("Damka ruszyla sie");
-                                    board.kingMove(myMove);
-                                    if (turn == 0) {
-                                        turn = 1;
-                                    } else if (turn == 1) {
-                                        turn = 0;
-                                    }
-                                } else System.out.println("NI HU JA");
-                            } else if (current_checker == 4) {
-                                if (board.canKingMoveJump(current_checker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo, turn)) {
-                                    System.out.println("Damka ruszyla sie");
-                                    board.kingMove(myMove);
-                                    if (turn == 0) {
-                                        turn = 1;
-                                    } else if (turn == 1) {
-                                        turn = 0;
-                                    }
-                                } else System.out.println("NI HU JA");
+                            } else if ((currentChecker == CheckersData.WHITE_KING || currentChecker == CheckersData.BLACK_KING)
+                                    && board.canKingMoveJump(currentChecker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo, turn)) {
+                                board.kingMove(myMove);
+                                changeTurn();
                             }
                         }
                     }
-
-                    if (enterCount==2) {
+                    if (enterCount == 2) {
                         selectedRowFrom = -1;
                         selectedColFrom = -1;
-                        selectedRowTo = -1;
-                        selectedColTo = -1;
                         enterCount = 0;
                     }
-                    initBoard();
-                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
-                    printCursor(pom_col * 6,pom_row * 3);
-                    screen.refresh();
+                    refreshBoard(uColor1, uColor2, selectedRowFrom, selectedColFrom, pomRow, pomCol);
 
-                } else if (keyPressed.getKeyType() == KeyType.Escape){
+                } else if (keyPressed.getKeyType() == KeyType.Escape) {
                     selectedRowFrom = -1;
                     selectedColFrom = -1;
-                    selectedRowTo = -1;
-                    selectedColTo = -1;
                     enterCount = 0;
-                    initBoard();
-                    printBoard(board.getBoard(),uColor1,uColor2, selectedRowFrom, selectedColFrom);
-                    printCursor(pom_col * 6,pom_row * 3);
-                    screen.refresh();
-                }
-                if (board.isOver() == 0) {
-                    System.out.println("Wygral bialy");
-                } else if (board.isOver() == 1) {
-                    System.out.println("Wygral czarny");
+                    refreshBoard(uColor1, uColor2, selectedRowFrom, selectedColFrom, pomRow, pomCol);
                 }
             }
             screen.refresh();
         }
-
         screen.refresh();
         screen.stopScreen();
     }
 
-    public static void printInterface(TextColor.ANSI uColor1, TextColor.ANSI uColor2, TextGraphics tg, String username1, String username2) {
+    private void refreshBoard(TextColor.ANSI uColor1, TextColor.ANSI uColor2, int selectedRowFrom, int selectedColFrom, int pomRow, int pomCol) throws IOException {
+        initBoard();
+        printBoard(board.getBoard(), uColor1, uColor2, selectedRowFrom, selectedColFrom);
+        printCursor(pomCol * 6, pomRow * 3);
+        screen.refresh();
+    }
+
+    private void changeTurn() {
+        if (turn == 0) {
+            turn = 1;
+        } else if (turn == 1) {
+            turn = 0;
+        }
+    }
+
+    private void printInterface(TextColor.ANSI uColor1, TextColor.ANSI uColor2, TextGraphics tg, String username1, String username2) {
         tg.drawRectangle(new TerminalPosition(48, 0), new TerminalSize(screen.getTerminalSize().getColumns() - 48, screen.getTerminalSize().getRows()), new TextCharacter(Symbols.BLOCK_MIDDLE, new TextColor.RGB(132, 216, 99), new TextColor.RGB(10, 10, 10)));
         tg.putString(new TerminalPosition(49, 1), "Gracz 1: ", SGR.BOLD);
         if (turn == 0 && board.isOver() != 1)
@@ -214,41 +162,42 @@ public class CheckersBoard {
         tg.setForegroundColor(uColor2);
         tg.putString(new TerminalPosition(58, 22), username2, SGR.BOLD, SGR.ITALIC);
         tg.setForegroundColor(TextColor.ANSI.DEFAULT);
-        Date date = new Date(tc.getElapsedTime());
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String formatted = formatter.format(date);
+        Date date = new Date(timeCounter.getElapsedTime());
+        String formatted = getFormattedTime(date);
         tg.putString(new TerminalPosition(60, 10), formatted);
     }
 
-    public static void printBoard(int[][] board, TextColor.ANSI uColor1, TextColor.ANSI uColor2, int selectedRowFrom, int selectedColFrom) throws IOException {
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                if ( board[row][col] == 1) {
-                    printFirstChecker(col * 6,row* 3,uColor1);
-                }
-                else if (board[row][col]==2){
-                    printSecoundChecker(col * 6, row * 3,uColor2);
-                }
-                else if( board[row][col] == 3)
-                    printFirstKing(col * 6, row * 3,uColor1);
-                else if( board[row][col] == 4)
-                    printSecoundKing(col * 6, row * 3,uColor2);
-            }
-        }
-        if(selectedColFrom != -1 && selectedRowFrom != -1){
-            printSelectedField(selectedColFrom * 6,selectedRowFrom * 3);
-        }
-    screen.refresh();
+    private String getFormattedTime(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return formatter.format(date);
     }
 
-    public static void printSelectedField(int selectedRow, int selectedCol) {
-        for (int i = selectedRow; i < selectedRow+ 6; i++) {
-            for (int j = selectedCol; j < selectedCol + 3; j++) {
-                if (i % 6 > 1 && i % 6 < 4) {
-                    if (j % 3 == 1){
-                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(243,58,255), new TextColor.RGB(243,58,255)));
-                    }
+    private void printBoard(int[][] board, TextColor.ANSI uColor1, TextColor.ANSI uColor2, int selectedRowFrom, int selectedColFrom) throws IOException {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == 1) {
+                    printChecker(col * 6, row * 3, uColor1);
+                } else if (board[row][col] == 2) {
+                    printChecker(col * 6, row * 3, uColor2);
+                } else if (board[row][col] == 3)
+                    printKing(col * 6, row * 3, uColor1);
+                else if (board[row][col] == 4)
+                    printKing(col * 6, row * 3, uColor2);
+            }
+        }
+        if (selectedColFrom != -1 && selectedRowFrom != -1) {
+            printSelectedField(selectedColFrom * 6, selectedRowFrom * 3);
+        }
+        screen.refresh();
+    }
+
+    private void printSelectedField(int selectedCol, int selectedRow) {
+        TextColor.RGB pink = new TextColor.RGB(243, 58, 255);
+        for (int i = selectedCol; i < selectedCol + 6; i++) {
+            for (int j = selectedRow; j < selectedRow + 3; j++) {
+                if ((i % 6 > 1 && i % 6 < 4) && j % 3 == 1) {
+                    screen.setCharacter(i, j, new TextCharacter(' ', pink, pink));
                 }
             }
         }
@@ -258,109 +207,58 @@ public class CheckersBoard {
     //glownie zmienne pomocnicze: czyj ruch
     // i pionki na mapie
 
-    void doNewGame(ChekersData board){
-        gameInProgress = true;
-    }
-    public static void initBoard(){
+    private void initBoard() {
+        TextColor.RGB white = new TextColor.RGB(255, 255, 255);
+        TextColor.RGB gray = new TextColor.RGB(56, 56, 56);
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                if ( row % 2 == col % 2 ) {
-                    printWhiteField(col * 6,row* 3);
-                }
-                else {
-                    printBrownField(col * 6,row * 3);
-                }
-            }
-        }
-    }
-
-    public static void printFirstChecker(int row, int col,TextColor.ANSI uCol1) {
-        for (int i = row; i < row + 6; i++) {
-            for (int j = col; j < col + 3; j++) {
-
-                if (i % 6 < 2 || i % 6 > 3) {
-                    if (j % 3 == 0){
-                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
-                    }else if (j % 3 == 2)
-                        /*brazowy*/
-                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
-                    else
-                        screen.setCharacter(i, j, new TextCharacter(' ', uCol1, uCol1));
+                if (row % 2 == col % 2) {
+                    printField(col * 6, row * 3, white);
                 } else {
-             /*szary*/ screen.setCharacter(i, j, new TextCharacter(' ', uCol1, uCol1));
+                    printField(col * 6, row * 3, gray);
+                }
+            }
+        }
+    }
+
+    private void printChecker(int col, int row, TextColor.ANSI uColor) {
+        for (int i = col; i < col + 6; i++) {
+            for (int j = row; j < row + 3; j++) {
+                if (i % 6 < 2 || i % 6 > 3) {
+                    if (j % 3 != 0 && j % 3 != 2)
+                        screen.setCharacter(i, j, new TextCharacter(' ', uColor, uColor));
+                } else {
+                    screen.setCharacter(i, j, new TextCharacter(' ', uColor, uColor));
                 }
             }
         }
     }
 
 
-    public static void printWhiteField(int r, int c){
-        for (int i = r; i < r + 6; i++) {
-            for (int j = c; j < c + 3; j++) {
-  /*bialy*/    screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(255,255,255),new TextColor.RGB(255,255,255)));
+    private void printField(int col, int row, TextColor.RGB color) {
+        for (int i = col; i < col + 6; i++) {
+            for (int j = row; j < row + 3; j++) {
+                screen.setCharacter(i, j, new TextCharacter(' ', color, color));
             }
         }
     }
 
 
-    public static void printCursor(int row, int col){
-        for (int i = row; i < row + 6; i++) {
-            for (int j = col; j < col + 3; j++) {
-                if(j%3==0 || j%3==2 || ((i%6 == 0 || i%6 ==5) && j%3==1))
-                    screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(243,58,255),new TextColor.RGB(243,58,255)));
+    private void printCursor(int col, int row) {
+        TextColor.RGB pink = new TextColor.RGB(243, 58, 255);
+        for (int i = col; i < col + 6; i++) {
+            for (int j = row; j < row + 3; j++) {
+                if (j % 3 == 0 || j % 3 == 2 || ((i % 6 == 0 || i % 6 == 5) && j % 3 == 1))
+                    screen.setCharacter(i, j, new TextCharacter(' ', pink, pink));
             }
         }
     }
 
-    public static void printFirstKing(int row, int col, TextColor.ANSI uCol1){
-        for (int i = row; i < row + 6; i++) {
-            for (int j = col; j < col + 3; j++) {
-                if(j%3==2)
-                screen.setCharacter(i, j, new TextCharacter(' ', uCol1, uCol1));
-                else if ((j%3==1 && (i%6>0 && i%6< 5))||((j%3==0 && (i%6>1 && i%6< 4))))
-                screen.setCharacter(i, j, new TextCharacter(' ', uCol1, uCol1));
-            }
-        }
-    }
-
-    public static void printSecoundKing(int row, int col, TextColor.ANSI uCol2){
-        for (int i = row; i < row + 6; i++) {
-            for (int j = col; j < col + 3; j++) {
-                if(j%3==2)
-                    screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
-                else if (j%3==1 && (i%6>0 && i%6< 5))
-                    screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
-                else if (j%3==0 && (i%6>1 && i%6< 4))
-                    screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
-            }
-        }
-    }
-
-
-    public static void printBrownField(int r, int c){
-        for (int i = r; i < r + 6; i++) {
-            for (int j = c; j < c + 3; j++) {
-                /*brazowy*/
-                screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
-            }
-        }
-    }
-
-    public static void printSecoundChecker(int row, int col,TextColor.ANSI uCol2) {
-        for (int i = row; i < row + 6; i++) {
-            for (int j = col; j < col + 3; j++) {
-
-                if (i % 6 < 2 || i % 6 > 3) {
-                    if (j % 3 == 0)
-                        /*brazowy*/
-                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
-                    else if (j % 3 == 2)
-                        /*brazowy*/
-                        screen.setCharacter(i, j, new TextCharacter(' ', new TextColor.RGB(56, 56, 56), new TextColor.RGB(56, 56, 56)));
-                    else
-                        screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
-                } else {
-                        screen.setCharacter(i, j, new TextCharacter(' ', uCol2, uCol2));
+    private void printKing(int col, int row, TextColor.ANSI uColor) {
+        for (int i = col; i < col + 6; i++) {
+            for (int j = row; j < row + 3; j++) {
+                if ((j % 3 == 2) || ((j % 3 == 1 && (i % 6 > 0 && i % 6 < 5)) || (j % 3 == 0 && (i % 6 > 1 && i % 6 < 4)))) {
+                    screen.setCharacter(i, j, new TextCharacter(' ', uColor, uColor));
                 }
             }
         }
