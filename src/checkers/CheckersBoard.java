@@ -141,20 +141,22 @@ class CheckersBoard {
         if (turn == 0 && board.isOver() != 1)
             tg.putString(new TerminalPosition(49, 2), "Twoja tura!", SGR.BOLD);
         else if (turn == 0 && board.isOver() == 1) {
-            tg.putString(new TerminalPosition(49, 3), "Wygrałeś!", SGR.BOLD);
-            tg.putString(new TerminalPosition(49, 4), "Naciśnij backspace aby wrócić\n do menu", SGR.BOLD);
-            tg.putString(new TerminalPosition(49, 5), "do menu", SGR.BOLD);
-        } else
-            tg.drawLine(new TerminalPosition(49, 2), new TerminalPosition(screen.getTerminalSize().getColumns() - 2, 2), new TextCharacter(' ', TextColor.ANSI.BLACK, TextColor.ANSI.BLACK));
-        tg.setForegroundColor(uColor1);
-        tg.putString(new TerminalPosition(58, 1), username1, SGR.BOLD, SGR.ITALIC);
-        tg.setForegroundColor(TextColor.ANSI.DEFAULT);
-        if (turn == 1 && board.isOver() != 0)
-            tg.putString(new TerminalPosition(49, 21), "Twoja tura!", SGR.BOLD);
-        else if (turn == 1 && board.isOver() == 0) {
             tg.putString(new TerminalPosition(49, 18), "Wygrałeś!", SGR.BOLD);
             tg.putString(new TerminalPosition(49, 19), "Naciśnij backspace aby wrócić\n do menu", SGR.BOLD);
             tg.putString(new TerminalPosition(49, 20), "do menu", SGR.BOLD);
+        } else {
+            tg.drawLine(new TerminalPosition(49, 2), new TerminalPosition(screen.getTerminalSize().getColumns() - 2, 2), new TextCharacter(' ', TextColor.ANSI.BLACK, TextColor.ANSI.BLACK));
+        }
+        tg.setForegroundColor(uColor1);
+        tg.putString(new TerminalPosition(58, 1), username1, SGR.BOLD, SGR.ITALIC);
+        tg.setForegroundColor(TextColor.ANSI.DEFAULT);
+        if (turn == 1 && board.isOver() != 0) {
+            tg.putString(new TerminalPosition(49, 21), "Twoja tura!", SGR.BOLD);
+        }
+        else if (turn == 1 && board.isOver() == 0) {
+            tg.putString(new TerminalPosition(49, 3), "Wygrałeś!", SGR.BOLD);
+            tg.putString(new TerminalPosition(49, 4), "Naciśnij backspace aby wrócić\n do menu", SGR.BOLD);
+            tg.putString(new TerminalPosition(49, 5), "do menu", SGR.BOLD);
         } else {
             tg.drawLine(new TerminalPosition(49, 21), new TerminalPosition(screen.getTerminalSize().getColumns() - 2, 21), new TextCharacter(' ', TextColor.ANSI.BLACK, TextColor.ANSI.BLACK));
         }
