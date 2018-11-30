@@ -1,8 +1,8 @@
-package checkers;
+package data;
 
-class TimeCounter {
+public class TimeCounter {
 
-    long getElapsedTime() {
+    public long getElapsedTime() {
         return System.currentTimeMillis() - this.startingTime;
     }
 

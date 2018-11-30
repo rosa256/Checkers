@@ -1,22 +1,22 @@
-package checkers;
+package data;
 
 import java.util.ArrayList;
 
-class CheckersData {
+public class CheckersData {
     // Klasa ktora przechowuje informacje o Białych i Czarnych pionkach.
     // Informacje o polozeniu pionkow na mapie itp. rozwinie się jeszcze
 
     // Białe Pionki to 1 a czarne to 2 i to będzie na tablicy intow
-    static final int EMPTY = 0;
-    static final int WHITE = 1;
-    static final int BLACK = 2;
-    static final int WHITE_KING = 3;
-    static final int BLACK_KING = 4;
+    public static final int EMPTY = 0;
+    public static final int WHITE = 1;
+    public static final int BLACK = 2;
+    public static final int WHITE_KING = 3;
+    public static final int BLACK_KING = 4;
 
 
     private int[][] board;     // Mapa intow - tak naprawde to bedzie nasza plansza pomocnicza - board[r][c]
 
-    CheckersData() {       //Konstruktor
+    public CheckersData() {       //Konstruktor
         board = new int[][]{
                 {0, 1, 0, 1, 0, 1, 0, 1},
                 {1, 0, 1, 0, 1, 0, 1, 0},
@@ -28,15 +28,15 @@ class CheckersData {
                 {2, 0, 2, 0, 2, 0, 2, 0}};
     }
 
-    int[][] getBoard() {
+    public int[][] getBoard() {
         return board;
     }
 
-    void makeMove(CheckersMove move) {
+    public void makeMove(CheckersMove move) {
         makeMove(move.fromRow, move.fromCol, move.toRow, move.toCol);
     }
 
-    void kingMove(CheckersMove move) {
+    public void kingMove(CheckersMove move) {
         kingMove(move.fromRow, move.fromCol, move.toRow, move.toCol);
     }
 
@@ -54,20 +54,17 @@ class CheckersData {
             board[toRow][toCol] = WHITE_KING;
     }
 
-    boolean canMove(int player, int fromRow, int fromCol, int toRow, int toCol, int turn) {
+    public boolean canMove(int player, int fromRow, int fromCol, int toRow, int toCol, int turn) {
         if (board[toRow][toCol] != EMPTY) {
             return false;
         }
         boolean nextColumn = toCol == (fromCol + 1) || toCol == (fromCol - 1);
         int currentChecker = board[fromRow][fromCol];
-        if ((player == WHITE && turn == 0) && (currentChecker == WHITE && toRow == fromRow + 1 && nextColumn)
-                || (player == BLACK && turn == 1) && (currentChecker == BLACK && toRow == fromRow - 1 && nextColumn)) {
-                return true;
-        }
-        return false;
+        return (player == WHITE && turn == 0) && (currentChecker == WHITE && toRow == fromRow + 1 && nextColumn)
+                || (player == BLACK && turn == 1) && (currentChecker == BLACK && toRow == fromRow - 1 && nextColumn);
     }
 
-    boolean canKingMoveJump(int player, int rowFrom, int rowTo, int colFrom, int colTo, int turn) {
+    public boolean canKingMoveJump(int player, int rowFrom, int rowTo, int colFrom, int colTo, int turn) {
         if ((player == WHITE_KING && turn == 0) || (player == BLACK_KING && turn == 1)) {
             int colPosition;
             ArrayList<Integer> tab = new ArrayList<>();
@@ -123,7 +120,7 @@ class CheckersData {
     }
 
 
-    boolean canJump(int player, int fromRow, int fromCol, int toRow, int toCol, int turn) {
+    public boolean canJump(int player, int fromRow, int fromCol, int toRow, int toCol, int turn) {
         int jumpedChecker = board[(fromRow + toRow) / 2][(fromCol + toCol) / 2];
         boolean correctColumn = toCol == (fromCol + 2) || toCol == (fromCol - 2);
         boolean correctRowWhite = toRow == fromRow + 2;
@@ -181,7 +178,7 @@ class CheckersData {
         return colPosition;
     }
 
-    int isOver() {
+    public int isOver() {
         ArrayList<Integer> wholeBoard = new ArrayList<>();
         for (int[] row : board) {
             for (int element : row) {
