@@ -17,12 +17,13 @@ public class Game {
     public static void main(String[] args) throws IOException {
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
         Screen screen = null;
-        final CheckersBoard[] gameBoard = {null};
+
         try {
+
             screen = terminalFactory.createScreen();
             screen.startScreen();
             final WindowBasedTextGUI textGUI = new MultiWindowTextGUI(screen);
-            final Window window = new BasicWindow("Checkers");
+            final BasicWindow window = new BasicWindow("Checkers");
 
             TextBox user1 = new TextBox();
             TextBox user2 = new TextBox();
@@ -42,7 +43,7 @@ public class Game {
                 @Override
                 public void run() {
                     window.setComponent(contentPanel);
-                    ((BasicWindow) window).setTitle("Checkers");
+                    window.setTitle("Checkers");
                 }
             });
 
@@ -56,16 +57,15 @@ public class Game {
                     } else {
                         try {
                             window.setComponent(gamePanel);
-                            gameBoard[0] = new CheckersBoard(userColor1.getSelectedItem(), userColor2.getSelectedItem(), user1.getText(), user2.getText());
+                            new CheckersBoard(userColor1.getSelectedItem(), userColor2.getSelectedItem(), user1.getText(), user2.getText());
                             window.setComponent(contentPanel);
-                        } catch (IOException | InterruptedException e) {
+                        } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
                 }
             });
 
-            GridLayout gridLayout = (GridLayout) contentPanel.getLayoutManager();
             contentPanel.addComponent(new Button("Nowa gra", new Runnable() {
                 @Override
                 public void run() {
@@ -81,7 +81,7 @@ public class Game {
                     newPanel.addComponent(userColor2);
                     newPanel.addComponent(startGameButton);
                     newPanel.addComponent(backButton);
-                    ((BasicWindow) window).setTitle("Nowa gra");
+                    window.setTitle("Nowa gra");
                     window.setComponent(newPanel);
 
 
