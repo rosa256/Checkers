@@ -23,8 +23,9 @@ class Game {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setResizable(false);
         mainFrame.setPreferredSize(new Dimension(1024, 768));
-        mainFrame.setLocation(50, 50);
-        mainFrame.setLayout(new GridLayout(4, 1));
+        mainFrame.setLocation(0, 0);
+        mainFrame.setLayout(new GridLayout(5, 1));
+
         JButton newGameButton = new JButton("Nowa gra");
         newGameButton.setPreferredSize(new Dimension(300, 300));
         newGameButton.addActionListener(new ActionListener() {
@@ -164,7 +165,43 @@ class Game {
                 System.exit(0);
             }
         });
+
+        JButton startGameButton = new JButton("StartGry");
+        startGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JPanel gameBoard = new JPanel();
+                gameBoard.setPreferredSize(new Dimension(1024, 768));
+                JToolBar bar = new JToolBar();
+
+                NewGameFrame frame = new NewGameFrame();
+
+                CheckersBoard board = new CheckersBoard();
+
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.add(bar,BorderLayout.LINE_START);
+                frame.add(board);
+
+                frame.pack();
+                frame.setVisible(true);
+            }
+            public JLabel setBackground(){
+
+                ImageIcon background=new ImageIcon("/home/damian/Projects/Checkers_Project/src/pictures/board.png");
+                Image img = background.getImage();
+                Image temp = img.getScaledInstance(1024,768, Image.SCALE_SMOOTH);
+                background= new ImageIcon(temp);
+                JLabel back = new JLabel(background);
+                back.setLayout(null);
+                back.setBounds(0,0,1024,768);
+
+                return back;
+            }
+
+        });
+        mainFrame.add(startGameButton);
         mainFrame.add(exitButton);
+
         mainFrame.pack();
         mainFrame.setVisible(true);
     }
