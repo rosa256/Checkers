@@ -1,5 +1,4 @@
 package checkers_swing;
-import data.CheckersMove;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import data.CheckersData;
-
 public class CheckersBoard extends JPanel{
     CheckersData checkersData = new CheckersData();
 
@@ -17,8 +14,12 @@ public class CheckersBoard extends JPanel{
     private ImageIcon image_ico;
     private ImageIcon image_ico_pawn_white;
     private ImageIcon image_ico_pawn_black;
+    private ImageIcon image_ico_pawn_black_king;
+    private ImageIcon image_ico_pawn_white_king;
     private Image image_pawn_white;
     private Image image_pawn_black;
+    private Image image_pawn_black_king;
+    private Image image_pawn_white_king;
     private Pawn temp_pawn =new Pawn();
     private Pawn pressed_pawn=null;
     private Pawn printed_pawn=null;
@@ -44,6 +45,14 @@ public class CheckersBoard extends JPanel{
                 .getScaledInstance(128,96,Image.SCALE_SMOOTH);
         image_ico_pawn_black = new ImageIcon(image_pawn_black);
 
+        image_pawn_white_king = new ImageIcon(getClass().getResource("/pictures/white_king.png")).getImage()
+                .getScaledInstance(128,96,Image.SCALE_SMOOTH);
+        image_ico_pawn_white_king = new ImageIcon(image_pawn_white_king);
+
+        image_pawn_black_king = new ImageIcon(getClass().getResource("/pictures/black_king.png")).getImage()
+                .getScaledInstance(128,96,Image.SCALE_SMOOTH);
+        image_ico_pawn_black_king = new ImageIcon(image_pawn_black_king);
+
         addPawns(board.getBoard());
         setPreferredSize(new Dimension(image.getWidth(null), image.getHeight(null)));
 
@@ -52,6 +61,8 @@ public class CheckersBoard extends JPanel{
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (pawns.containsKey(new Point(evt.getX()/128,evt.getY()/96)))
                     System.out.println("JAKIS JESSSt!");
+                revalidate();
+                repaint();
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
 
@@ -76,14 +87,15 @@ public class CheckersBoard extends JPanel{
 
                     if ((selectedRowFrom + 1 == selectedRowTo || selectedRowFrom - 1 == selectedRowTo) && (currentChecker == CheckersData.WHITE || currentChecker == CheckersData.BLACK)) {
                         if (board.canMove(currentChecker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo, turn)) {
-                            board.makeMove(myMove);
+                            board.makeMove(myMove, pawns);
                             pawns.remove(pressed_pawn.point);//usuwam stary
                             pawns.put(dragged_pawn.point,dragged_pawn);//wkladamy nowy
                             changeTurn();
                         }
                     } else if ((selectedRowFrom + 2 == selectedRowTo || selectedRowFrom - 2 == selectedRowTo) && (currentChecker == 1 || currentChecker == 2)) {
                         if (board.canJump(currentChecker, selectedRowFrom, selectedColFrom, selectedRowTo, selectedColTo, turn)) {
-                            board.makeMove(myMove);
+                            board.makeMove(myMove, pawns);
+
                             int jumpRow = (selectedRowFrom + selectedRowTo) / 2;
                             int jumpCol = (selectedColFrom + selectedColTo) / 2;
                             pawns.remove(new Point(jumpCol,jumpRow));
@@ -95,7 +107,7 @@ public class CheckersBoard extends JPanel{
                         }
                     } else if ((currentChecker == CheckersData.WHITE_KING || currentChecker == CheckersData.BLACK_KING)
                             && board.canKingMoveJump(currentChecker, selectedRowFrom, selectedRowTo, selectedColFrom, selectedColTo, turn)) {
-                        board.kingMove(myMove);
+                        board.kingMove(myMove, pawns);
                         pawns.remove(pressed_pawn.point);//usuwam stary
                         pawns.put(dragged_pawn.point,dragged_pawn);//wkladamy nowy
                         changeTurn();
@@ -130,6 +142,7 @@ public class CheckersBoard extends JPanel{
     }
 
     private void addPawns(int[][] board) {
+        System.out.println("addPawns");
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] == 1) { //white
@@ -137,20 +150,19 @@ public class CheckersBoard extends JPanel{
                 } else if (board[row][col] == 2) {
                     pawns.put(new Point(col , row), new Pawn(new Point(col, row), image_ico_pawn_black));
                 } else if (board[row][col] == 3)
-                    System.out.println("TU POWINIEN BYC KING");
+                    pawns.put(new Point(col , row), new Pawn(new Point(col, row), image_ico_pawn_white_king));
                 else if (board[row][col] == 4)
-                    System.out.println("TU POWINIEN BYC KING");
+                    pawns.put(new Point(col , row), new Pawn(new Point(col, row), image_ico_pawn_black_king));
             }
         }
     }
-
 
     public void paint(Graphics g) {
         super.paintComponent(g);
         image_ico.paintIcon(this, g, 0, 0);
         drawPawns(g);
         if(printed_pawn!=null)
-        printed_pawn.image.paintIcon(this,g,(int)printed_pawn.point.getX(),(int)printed_pawn.point.getY());
+            printed_pawn.image.paintIcon(this,g,(int)printed_pawn.point.getX(),(int)printed_pawn.point.getY());
     }
 
     public void drawPawns(Graphics g) {
