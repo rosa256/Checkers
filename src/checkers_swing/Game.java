@@ -7,16 +7,18 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 class Game {
 
     private JFrame mainFrame;
-    private String name1;
-    private String name2;
-    private Color color1;
-    private Color color2;
+    private String name1 = "Gracz 1";
+    private String name2 = "Gracz 2";
+    private Color color1 = Color.BLACK;
+    private Color color2 = Color.YELLOW;
 
     Game() {
         mainFrame = new JFrame("Checkers");
@@ -68,6 +70,43 @@ class Game {
                         colorChooser2.removeChooserPanel(panel);
                     }
                 }
+
+                nameField1.addFocusListener(new FocusListener() {
+                    @Override
+                    public void focusGained(FocusEvent e) {
+                        if (nameField1.getText().equals(nameField2.getText()) && !nameField1.getText().equals("")) {
+                            JOptionPane.showMessageDialog(popup, "Gracze nie mogą mieć takich samych nazw");
+                            nameField1.setText("");
+                        }
+                    }
+
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        if (nameField1.getText().equals(nameField2.getText()) && !nameField1.getText().equals("")) {
+                            JOptionPane.showMessageDialog(popup, "Gracze nie mogą mieć takich samych nazw");
+                            nameField1.setText("");
+                        }
+                    }
+                });
+
+                nameField2.addFocusListener(new FocusListener() {
+                    @Override
+                    public void focusGained(FocusEvent e) {
+                        if (nameField2.getText().equals(nameField1.getText()) && !nameField2.getText().equals("")) {
+                            JOptionPane.showMessageDialog(popup, "Gracze nie mogą mieć takich samych nazw");
+                            nameField2.setText("");
+                        }
+                    }
+
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        if (nameField2.getText().equals(nameField1.getText()) && !nameField2.getText().equals("")) {
+                            JOptionPane.showMessageDialog(popup, "Gracze nie mogą mieć takich samych nazw");
+                            nameField2.setText("");
+                        }
+                    }
+                });
+
                 nameField1.getDocument().addDocumentListener(new DocumentListener() {
                     @Override
                     public void insertUpdate(DocumentEvent e) {
@@ -172,30 +211,113 @@ class Game {
             public void actionPerformed(ActionEvent e) {
                 JPanel gameBoard = new JPanel();
                 gameBoard.setPreferredSize(new Dimension(1024, 768));
-                JToolBar bar = new JToolBar();
+//                JToolBar bar = new JToolBar();
 
                 NewGameFrame frame = new NewGameFrame();
 
                 CheckersBoard board = new CheckersBoard();
 
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.add(bar,BorderLayout.LINE_START);
+//                frame.add(bar);
                 frame.add(board);
+                JPanel gui = new JPanel();
+                gui.setPreferredSize(new Dimension(256, 128));
+                gui.setLayout(new GridLayout(3, 1));
 
+                JPanel player1panel = new JPanel();
+                player1panel.setLayout(new BoxLayout(player1panel, BoxLayout.Y_AXIS));
+                player1panel.add(new JLabel("Gracz 1: "));
+                JLabel player1 = new JLabel(name1);
+                player1panel.add(player1);
+                JLabel turn1 = new JLabel("Twoja tura!");
+                JLabel win1 = new JLabel("Wygrałeś!");
+                player1panel.add(turn1);
+                player1panel.add(win1);
+                player1panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+                player1.setForeground(color1);
+                gui.add(player1panel);
+
+                JPanel turnpanel = new JPanel();
+                turnpanel.add(new JLabel("Czas tury:"));
+                Date date = new Date(board.getElapsedBoardTime());
+                String formatted = getFormattedTime(date);
+                JLabel time = new JLabel(formatted);
+                turnpanel.add(time);
+                gui.add(turnpanel);
+
+                JPanel player2panel = new JPanel();
+                player2panel.setLayout(new BoxLayout(player2panel, BoxLayout.Y_AXIS));
+                player2panel.add(new JLabel("Gracz 2:"));
+                JLabel player2 = new JLabel(name2);
+                player2panel.add(player2);
+                JLabel turn2 = new JLabel("Twoja tura!");
+                JLabel win2 = new JLabel("Wygrałeś!");
+                player2panel.add(turn2);
+                player2panel.add(win2);
+                player2panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+                player2.setForeground(color2);
+                gui.add(player2panel);
+
+
+                board.addMouseMotionListener(new MouseMotionListener() {
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+                        Date current_time = new Date(board.getElapsedBoardTime());
+                        String format = getFormattedTime(current_time);
+                        time.setText(format);
+                    }
+                });
+                board.addMouseListener(new MouseListener() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+
+                    }
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        if (board.getTurn() == 0 && board.isGameOver() == -1) {
+                            turn1.setVisible(true);
+                            turn2.setVisible(false);
+                            win1.setVisible(false);
+                            win2.setVisible(false);
+                        } else if (board.getTurn() == 1 && board.isGameOver() == -1) {
+                            turn2.setVisible(true);
+                            turn1.setVisible(false);
+                            win1.setVisible(false);
+                            win2.setVisible(false);
+                        }
+                        if (board.isGameOver() == 0) {
+                            turn1.setVisible(false);
+                            turn2.setVisible(false);
+                            win1.setVisible(true);
+                        } else if (board.isGameOver() == 1) {
+                            turn1.setVisible(false);
+                            turn2.setVisible(false);
+                            win2.setVisible(true);
+                        }
+                    }
+
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                    }
+                });
+                frame.add(gui, BorderLayout.EAST);
                 frame.pack();
                 frame.setVisible(true);
-            }
-            public JLabel setBackground(){
-
-                ImageIcon background=new ImageIcon("/home/damian/Projects/Checkers_Project/src/pictures/board.png");
-                Image img = background.getImage();
-                Image temp = img.getScaledInstance(1024,768, Image.SCALE_SMOOTH);
-                background= new ImageIcon(temp);
-                JLabel back = new JLabel(background);
-                back.setLayout(null);
-                back.setBounds(0,0,1024,768);
-
-                return back;
             }
 
         });
@@ -206,7 +328,13 @@ class Game {
         mainFrame.setVisible(true);
     }
 
+    private String getFormattedTime(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return formatter.format(date);
+    }
 }
+
 
 class Main {
     public static void main(String[] args) {

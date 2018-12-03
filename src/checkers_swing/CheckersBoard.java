@@ -1,5 +1,6 @@
 package checkers_swing;
 import data.CheckersData;
+import data.TimeCounter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,12 +23,15 @@ public class CheckersBoard extends JPanel{
     private Pawn pressed_pawn=null;
     private Pawn printed_pawn=null;
     private Pawn dragged_pawn=null;
+    private TimeCounter timeCounter;
 
     HashMap<Point, Pawn> pawns = new HashMap<>();
     private CheckersData board;
     private int turn;
 
     public CheckersBoard() {
+        timeCounter = new TimeCounter();
+
         board = new CheckersData();
 
         image = new ImageIcon(getClass().getResource("/pictures/board.png")).getImage()
@@ -147,6 +151,10 @@ public class CheckersBoard extends JPanel{
         }
     }
 
+    public long getElapsedBoardTime() {
+        return timeCounter.getElapsedTime();
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         image_ico.paintIcon(this, g, 0, 0);
@@ -160,6 +168,14 @@ public class CheckersBoard extends JPanel{
         for (Map.Entry<Point, Pawn> e : pawns.entrySet()) {
             e.getValue().image.paintIcon(this, g, (int) e.getValue().point.getX()*128, (int) e.getValue().point.getY()*96);
         }
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public int isGameOver() {
+        return board.isOver();
     }
 
     private void changeTurn() {
