@@ -215,7 +215,7 @@ class Game {
 
                 NewGameFrame frame = new NewGameFrame();
 
-                CheckersBoard board = new CheckersBoard();
+                CheckersBoard board = new CheckersBoard(color1,color2);
 
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //                frame.add(bar);
