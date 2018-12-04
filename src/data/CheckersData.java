@@ -1,5 +1,6 @@
 package data;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class CheckersData {
@@ -66,31 +67,70 @@ public class CheckersData {
 
     public boolean canKingMoveJump(int player, int rowFrom, int rowTo, int colFrom, int colTo, int turn) {
         if ((player == WHITE_KING && turn == 0) || (player == BLACK_KING && turn == 1)) {
+            ArrayList<Point> availablePoints = new ArrayList<Point>();
+            availablePoints.clear();
             int colPosition;
             ArrayList<Integer> tab = new ArrayList<>();
             if (rowFrom > rowTo && colFrom > colTo) { // lewy_gorny
                 colPosition = colFrom;
                 for (int i = rowFrom; i >= rowTo; i--) {
                     tab.add(board[i][colPosition]);
+
+                    availablePoints.add(new Point(i,colPosition));
                     colPosition--;
                 }
+                for (Point p : availablePoints) {
+                    System.out.println("X: "+p.getX()+"Y: "+p.getY());
+                }
+
+                if(!(rowTo == availablePoints.get(availablePoints.size()-1).getX()
+                    && colTo==availablePoints.get(availablePoints.size()-1).getY())){
+                    return false;
+                }
+
+
             } else if (rowFrom > rowTo && colFrom < colTo) { // prawy_gorny
                 colPosition = colFrom;
                 for (int i = rowFrom; i >= rowTo; i--) {
                     tab.add(board[i][colPosition]);
+                    availablePoints.add(new Point(i,colPosition));
                     colPosition++;
                 }
+                for (Point p : availablePoints) {
+                    System.out.println("X: "+p.getX()+"Y: "+p.getY());
+                }
+                if(!(rowTo == availablePoints.get(availablePoints.size()-1).getX()
+                        && colTo==availablePoints.get(availablePoints.size()-1).getY())){
+                    return false;
+                }
+
             } else if (rowFrom < rowTo && colFrom < colTo) { // prawy_dolny
                 colPosition = colFrom;
                 for (int i = rowFrom; i <= rowTo; i++) {
                     tab.add(board[i][colPosition]);
+                    availablePoints.add(new Point(i,colPosition));
                     colPosition++;
+                }
+                for (Point p : availablePoints) {
+                    System.out.println("X: "+p.getX()+"Y: "+p.getY());
+                }
+                if(!(rowTo == availablePoints.get(availablePoints.size()-1).getX()
+                        && colTo==availablePoints.get(availablePoints.size()-1).getY())){
+                    return false;
                 }
             } else if (rowFrom < rowTo && colFrom > colTo) { // lewy_dolny
                 colPosition = colFrom;
                 for (int i = rowFrom; i <= rowTo; i++) {
                     tab.add(board[i][colPosition]);
+                    availablePoints.add(new Point(i,colPosition));
                     colPosition--;
+                }
+                for (Point p : availablePoints) {
+                    System.out.println("X: "+p.getX()+"Y: "+p.getY());
+                }
+                if(!(rowTo == availablePoints.get(availablePoints.size()-1).getX()
+                        && colTo==availablePoints.get(availablePoints.size()-1).getY())){
+                    return false;
                 }
             } else
                 return false;
