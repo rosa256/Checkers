@@ -35,23 +35,23 @@ public class CheckersBoard extends JPanel{
         ImageConverter im = new ImageConverter(color1, color2);
         board = new CheckersData();
 
-        image = new ImageIcon(getClass().getResource("/pictures/board.png")).getImage()
+        image = new ImageIcon("src/pictures/board.png").getImage()
                 .getScaledInstance(1024, 768, Image.SCALE_SMOOTH);
         image_ico = new ImageIcon(image);
 
-        image_pawn_white = new ImageIcon(getClass().getResource("/pictures/white_pawn1.png")).getImage()
+        image_pawn_white = new ImageIcon("src/pictures/created_white_pawn.png").getImage()
                 .getScaledInstance(128,96,Image.SCALE_SMOOTH);
         image_ico_pawn_white = new ImageIcon(image_pawn_white);
 
-        image_pawn_black = new ImageIcon(getClass().getResource("/pictures/black_pawn1.png")).getImage()
+        image_pawn_black = new ImageIcon("src//pictures/created_black_pawn.png").getImage()
                 .getScaledInstance(128,96,Image.SCALE_SMOOTH);
         image_ico_pawn_black = new ImageIcon(image_pawn_black);
 
-        image_pawn_white_king = new ImageIcon(getClass().getResource("/pictures/white_king1.png")).getImage()
+        image_pawn_white_king = new ImageIcon("src/pictures/created_white_king.png").getImage()
                 .getScaledInstance(128,96,Image.SCALE_SMOOTH);
         image_ico_pawn_white_king = new ImageIcon(image_pawn_white_king);
 
-        image_pawn_black_king = new ImageIcon(getClass().getResource("/pictures/black_king1.png")).getImage()
+        image_pawn_black_king = new ImageIcon("src/pictures/created_black_king.png").getImage()
                 .getScaledInstance(128,96,Image.SCALE_SMOOTH);
         image_ico_pawn_black_king = new ImageIcon(image_pawn_black_king);
 

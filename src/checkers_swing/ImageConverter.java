@@ -11,22 +11,22 @@ public class ImageConverter {
     public ImageConverter(Color color1, Color color2) {
 
         //Normal Pawns
-    createOwnImage(color1,"/pictures/white_pawn.png","/pictures/white_pawn1.png");
-    createOwnImage(color2,"/pictures/white_pawn.png","/pictures/black_pawn1.png");
+    createOwnImage(color1,"src/pictures/white_pawn.png","src/pictures/created_white_pawn.png");
+    createOwnImage(color2,"src/pictures/white_pawn.png","src/pictures/created_black_pawn.png");
 
         //King Pawns
-    createOwnImage(color1, "/pictures/white_king.png","/pictures/white_king1.png");
-    createOwnImage(color2,"/pictures/white_king.png","/pictures/black_king1.png");
+    createOwnImage(color1, "src/pictures/white_king.png","src/pictures/created_white_king.png");
+    createOwnImage(color2,"src/pictures/white_king.png","src/pictures/created_black_king.png");
     }
 
     public void createOwnImage(Color color, String sourcePath, String destinationPath){
         BufferedImage img = null;
         BufferedImage rgbImage;
-        URL sourceUrl = getClass().getResource(sourcePath);
-        URL destinationUrl = getClass().getResource(destinationPath);
+        //URL sourceUrl = getClass().getResource(sourcePath);
+       // URL destinationUrl = getClass().getResource(destinationPath);
 
         try {
-            img = ImageIO.read(new File(sourceUrl.getPath()));
+            img = ImageIO.read(new File(sourcePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,7 +45,7 @@ public class ImageConverter {
                     rgbImage.setRGB(i, j, myNew);
             }
         }
-        File outputfile = new File(destinationUrl.getPath());
+        File outputfile = new File(destinationPath);
         try {
             ImageIO.write(rgbImage, "png", outputfile);
         } catch (IOException e) {
